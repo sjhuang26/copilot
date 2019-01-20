@@ -1,4 +1,4 @@
-import { Project } from './Project';
+import { ProjectManager } from './ProjectManager';
 
 export enum ErrorLevel {
     NoError, Warning, Error, FatalError
@@ -65,7 +65,7 @@ export class Copilot {
     /**
     * Gets info on the current project, and null if no project is currently loaded
     */
-    public getProject(): Project {
+    public getProject(): ProjectManager {
         throw new Error("Method not implemented!");        
     }
     
