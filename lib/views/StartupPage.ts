@@ -28,6 +28,7 @@ export class StartupPage implements Component {
         this.element.appendChild(title);
         
         const projectSetup = document.createElement("input");
+        projectSetup.classList.add('btn');
         projectSetup.setAttribute('type', 'button');
         projectSetup.setAttribute('value', 'Setup a new Project');
         projectSetup.addEventListener('click', () => {
