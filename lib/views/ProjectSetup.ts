@@ -33,10 +33,12 @@ export class ProjectSetup implements Component {
         this.element.appendChild(inputLabel);
         
         this.inputBox = document.createElement("input");
+        this.inputBox.classList.add('input-text')
         this.inputBox.setAttribute('type', 'text');
         this.element.appendChild(this.inputBox);
         
         const submit = document.createElement("input");
+        submit.classList.add('btn');
         submit.setAttribute('type', 'button');
         submit.setAttribute('value', 'Go!');
 
@@ -45,6 +47,7 @@ export class ProjectSetup implements Component {
         this.element.appendChild(submit);
 
         const home = document.createElement("input");
+        home.classList.add('btn');
         home.setAttribute('type', 'button');
         home.setAttribute('value', 'Back');
         home.addEventListener('click', () => {
