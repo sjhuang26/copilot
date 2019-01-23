@@ -1,39 +1,38 @@
-import { ProjectManager } from './ProjectManager';
-
-export enum ErrorLevel {
-    NoError, Warning, Error, FatalError
-}
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var ErrorLevel;
+(function (ErrorLevel) {
+    ErrorLevel[ErrorLevel["NoError"] = 0] = "NoError";
+    ErrorLevel[ErrorLevel["Warning"] = 1] = "Warning";
+    ErrorLevel[ErrorLevel["Error"] = 2] = "Error";
+    ErrorLevel[ErrorLevel["FatalError"] = 3] = "FatalError";
+})(ErrorLevel = exports.ErrorLevel || (exports.ErrorLevel = {}));
 /**
 * Describes the error state of an app
 */
-export class ErrorState {
-    public constructor() {
-        throw new Error("Method not implemented!");        
+class ErrorState {
+    constructor() {
+        throw new Error("Method not implemented!");
     }
-    
     /**
     * Returns the severity of the error
     */
-    public getErrorLevel(): ErrorLevel {
-        throw new Error("Method not implemented!");        
+    getErrorLevel() {
+        throw new Error("Method not implemented!");
     }
-    
-    public getMessage(): string {
-        throw new Error("Method not implemented!");        
+    getMessage() {
+        throw new Error("Method not implemented!");
     }
 }
-
+exports.ErrorState = ErrorState;
 /**
 * Contains the logic for main application. Handles persistend stuff (i.e. loading / saving / updating projects).
 * All the operations return a boolean indicating success or failure. More information on the operation can be obtained with getErrorState().
 */
-export class Copilot {
-    private static instance: Copilot;
-    private constructor() {
+class Copilot {
+    constructor() {
         // throw new Error("Method not implemented!");        
     }
-    
     /**
     * Sets up a new project for the specified curriculum in the current folder.
     * @param callback Callback result is true if the operation was successful, false if not, in which the error state will be set and can be accessed with application.getErrorState()
@@ -41,54 +40,50 @@ export class Copilot {
     * @param target The location on the disk to initial the new project
     * @return True if the operation was successful, false if not, in which the error state will be set and can be accessed with getErrorState
     */
-    public setupProject(callback: (result: boolean, arg: Copilot) => void, location: string, target?: string ): boolean {
-        throw new Error("Method not implemented!");        
+    setupProject(callback, location, target) {
+        throw new Error("Method not implemented!");
     }
-    
     /**
-    * Loads a project from the `curriculum.json`. 
+    * Loads a project from the `curriculum.json`.
     * @param callback Callback result is true if the operation was successful, false if not, in which the error state will be set and can be accessed with application.getErrorState()
     */
-    public loadProject( callback: (result: boolean, application: Copilot) => void ): boolean {
-        throw new Error("Method not implemented!");        
+    loadProject(callback) {
+        throw new Error("Method not implemented!");
     }
-    
     /**
     * Fast-forwards to the specified branch, if it is legal* (will be defined better later)
     * @param callback Callback result is true if the operation was successful, false if not, in which the error state will be set and can be accessed with application.getErrorState()
     * @param branchName The name of the branch to fast-forward to
     */
-    public fastForward( callback: (result: boolean, application: Copilot) => void, branchName: string, ): void {
-        throw new Error("Method not implemented!");        
+    fastForward(callback, branchName) {
+        throw new Error("Method not implemented!");
     }
-    
     /**
     * Gets info on the current project, and null if no project is currently loaded
     */
-    public getProject(): ProjectManager {
-        throw new Error("Method not implemented!");        
+    getProject() {
+        throw new Error("Method not implemented!");
     }
-    
     /**
     * Returns the error state of the current application.
     */
-    public getErrorState() {
-        throw new Error("Method not implemented!");        
+    getErrorState() {
+        throw new Error("Method not implemented!");
     }
-    
     /**
      * Initialized an instance of the app. Currently just creates a new insteance, but
      * in future versions will read from files and objects containing initialization
      * info
      */
-    static initialize(): void {
+    static initialize() {
         this.instance = new Copilot();
     }
-
-    static getInstance(): Copilot {
-        if(!this.instance) {
+    static getInstance() {
+        if (!this.instance) {
             throw new Error("Copilot has not been initialized!");
         }
         return this.instance;
     }
 }
+exports.Copilot = Copilot;
+//# sourceMappingURL=Copilot.js.map

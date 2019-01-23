@@ -1,47 +1,17 @@
-import CopilotView from './views/Sidebar';
-import { CompositeDisposable } from 'atom';
+import { CopilotState, PluginManager } from './controllers/PluginManager';
 
-export default {
+// This just forwards the startup code to an actual class
+let pluginManager: PluginManager;
+export function activate(state: CopilotState) {
+    pluginManager = new PluginManager();
+    pluginManager.activate(state);
+}
 
-  copilotView: null,
-  modalPanel: null,
-  subscriptions: null,
+export function deactivate() {
+    pluginManager.deactivate();
+}
 
-  activate(state: any) {
-    this.copilotView = new CopilotView(state.copilotViewState);
-    this.modalPanel = atom.workspace.addModalPanel({
-      item: this.copilotView.getElement(),
-      visible: false
-    });
+export function serialize() {
+    return pluginManager.serialize();
+}
 
-    // Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
-    this.subscriptions = new CompositeDisposable();
-
-    // Register command that toggles this view
-    this.subscriptions.add(atom.commands.add('atom-workspace', {
-      'copilot:toggleSidebar': () => this.toggle()
-    }));
-  },
-
-  deactivate() {
-    this.modalPanel.destroy();
-    this.subscriptions.dispose();
-    this.copilotView.destroy();
-  },
-
-  serialize() {
-    return {
-      copilotViewState: this.copilotView.serialize()
-    };
-  },
-
-  toggleSidebar() {
-    console.log('Copilot was toggled!');
-    return (
-      this.modalPanel.isVisible() ?
-      this.modalPanel.hide() :
-      this.modalPanel.show()
-    );
-  }
-
-};
