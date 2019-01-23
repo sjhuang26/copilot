@@ -1,9 +1,11 @@
 import * as Atom from 'atom';
 import { ComponentState, Component } from './Component';
 import { ProjectSetupState, ProjectSetup } from './ProjectSetup';
+import { StartupPageState, StartupPage } from './StartupPage';
 
 export interface CopilotViewState extends ComponentState {
-    projectSetupState?: ProjectSetupState
+    startupPageState?: StartupPageState;
+    projectSetupState?: ProjectSetupState;
 }
 
 /**
@@ -15,6 +17,7 @@ export class CopilotView implements Component {
     
     private currentComponent: Component;
 
+    private startupPage: StartupPage;
     private projectSetup: ProjectSetup;
 
     constructor(state: CopilotViewState) {
@@ -28,9 +31,13 @@ export class CopilotView implements Component {
             this.hide();
         }
 
+        this.startupPage = new StartupPage(this, state ? state.startupPageState : null);
+        this.element.appendChild(this.startupPage.getElement());
+
         this.projectSetup = new ProjectSetup(this, state ? state.projectSetupState : null);
         this.element.appendChild(this.projectSetup.getElement());
-        this.showProjectSetup();        
+
+        this.showStartupPage();        
     }
     
     // Returns an object that can be retrieved when package is activated
@@ -51,6 +58,14 @@ export class CopilotView implements Component {
         return this.element;
     }
     
+    showStartupPage(): void {
+        if(this.currentComponent) {
+            this.currentComponent.hide();
+        }
+        this.currentComponent = this.startupPage;
+        this.currentComponent.show();
+    }
+
     showProjectSetup(): void {
         if(this.currentComponent) {
             this.currentComponent.hide();

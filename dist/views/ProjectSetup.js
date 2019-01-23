@@ -28,6 +28,13 @@ class ProjectSetup {
         this.loadProject = this.loadProject.bind(this);
         submit.addEventListener('click', this.loadProject);
         this.element.appendChild(submit);
+        const home = document.createElement("input");
+        home.setAttribute('type', 'button');
+        home.setAttribute('value', 'Back');
+        home.addEventListener('click', () => {
+            parent.showStartupPage();
+        });
+        this.element.appendChild(home);
     }
     // Returns an object that can be retrieved when package is activated
     serialize() {

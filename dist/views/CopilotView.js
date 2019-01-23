@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const ProjectSetup_1 = require("./ProjectSetup");
+const StartupPage_1 = require("./StartupPage");
 /**
  * This is the rool component for the sidebar. Eventually other things
  * such as resizing, title, tabs, settings, etc. will be implemented.
@@ -16,9 +17,11 @@ class CopilotView {
         else {
             this.hide();
         }
+        this.startupPage = new StartupPage_1.StartupPage(this, state ? state.startupPageState : null);
+        this.element.appendChild(this.startupPage.getElement());
         this.projectSetup = new ProjectSetup_1.ProjectSetup(this, state ? state.projectSetupState : null);
         this.element.appendChild(this.projectSetup.getElement());
-        this.showProjectSetup();
+        this.showStartupPage();
     }
     // Returns an object that can be retrieved when package is activated
     serialize() {
@@ -34,6 +37,13 @@ class CopilotView {
     }
     getElement() {
         return this.element;
+    }
+    showStartupPage() {
+        if (this.currentComponent) {
+            this.currentComponent.hide();
+        }
+        this.currentComponent = this.startupPage;
+        this.currentComponent.show();
     }
     showProjectSetup() {
         if (this.currentComponent) {
