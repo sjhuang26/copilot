@@ -3,7 +3,7 @@ import { Copilot } from '../models/Copilot';
 import { CopilotViewProps, CopilotView } from '../components/CopilotView';
 
 export interface CopilotState {
-    copilotViewProps: CopilotViewProps
+    copilotViewProps?: CopilotViewProps
 }
 
 /**
@@ -22,10 +22,12 @@ export class PluginManager {
     activate(state: CopilotState) {
         // Initialize model
         Copilot.initialize();
+
+        state = state || {};
         
         // Create sidebar
         // this.copilotView = new CopilotView(state ? state.copilotViewState : null);
-        this.copilotView = new CopilotView(state ? state.copilotViewProps : {});
+        this.copilotView = new CopilotView(state.copilotViewProps || {});
         this.panel = atom.workspace.addRightPanel({
             item: this.copilotView,
             visible: true

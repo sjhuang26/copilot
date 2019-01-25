@@ -6,6 +6,9 @@ import { EtchComponent } from './EtchComponent';
 export interface CopilotViewProps extends JSX.Props {
     hidden?: boolean;
     currentView?: string; 
+
+    projectSetupProps?: ProjectSetupProps;
+    startupPageProps?: StartupPageProps;
 }
 
 /**
@@ -13,27 +16,31 @@ export interface CopilotViewProps extends JSX.Props {
 * such as resizing, title, tabs, settings, etc. will be implemented.
 */
 export class CopilotView extends EtchComponent {
-    private hidden: boolean;
+    public props: CopilotViewProps;
 
+    private hidden: boolean;
     private currentView: string; 
-    private currentViewElement: JSX.Element;
 
     constructor(props: CopilotViewProps) {
         super(props);
 
+        // Loading personal props
         this.hidden = props.hidden;
-        this.currentView = props.currentView || "StartupPage";
-        this.currentViewElement = <p>Loading...</p>;
+        this.setView(props.currentView || "StartupPage", false);
 
+        // Initialization
         etch.initialize(this);
-
-        this.setView(this.currentView);
     }
 
     render(): JSX.Element {
         return (
             <div class={`copilot ${this.hidden ? "hidden" : ""}`}>
-                {this.currentViewElement}
+                <div class={this.currentView == "projectsetup" ? "" : "hidden"}>
+                    <ProjectSetup {...this.props.projectSetupProps} parent={this} ref="projectSetup"/>
+                </div>
+                <div class={this.currentView == "startuppage" ? "" : "hidden"}>
+                    <StartupPage {...this.props.startupPageProps} parent={this} ref="startupPage"/>
+                </div>
             </div>
         );
     }
@@ -41,24 +48,27 @@ export class CopilotView extends EtchComponent {
     serialize(): CopilotViewProps {
         return {
             hidden: this.hidden,
-            currentView: this.currentView
+            currentView: this.currentView,
+
+            projectSetupProps: this.refs.projectSetup.serialize(),
+            startupPageProps: this.refs.startupPage.serialize()
         }
     }
 
-    setView(viewName: string) {
-        switch(viewName) {
-            case 'ProjectSetup':
-                this.currentViewElement = <ProjectSetup parent={this} />
-                break;
-            case 'StartupPage':
-                this.currentViewElement = <StartupPage parent={this} />
-                break;
-            default:
-                throw new Error("Unknown view!");
-                break;
+    /**
+     * Sets the view to the specified view.
+     * @param viewName Can be one of:
+     * *ProjectSetup
+     * *StartupPage
+     * @param updateNow Controls whether the component should update immediately to
+     * reflect the changed view. True by default.
+     */
+    setView(viewName: string, updateNow?: boolean): void {
+        this.currentView = viewName.toLowerCase(); 
+
+        if(updateNow === undefined || updateNow) {
+            etch.update(this);
         }
-        this.currentView = viewName;
-        etch.update(this);
     }
     
     isVisible(): boolean {

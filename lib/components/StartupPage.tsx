@@ -3,7 +3,7 @@ import { CopilotView } from './CopilotView';
 import { EtchComponent } from './EtchComponent';
 
 export interface StartupPageProps extends JSX.Props {
-    parent: CopilotView;
+    parent?: CopilotView;
 }
 
 /**
@@ -16,6 +16,9 @@ export class StartupPage extends EtchComponent {
 
     public constructor(props: StartupPageProps) {
         super(props);
+        if(!props.parent) {
+            throw new Error("Parent not defined!");
+        }
 
         this.parent = props.parent;
 
@@ -29,5 +32,9 @@ export class StartupPage extends EtchComponent {
                 <input type="button" class="btn" on={{click: () => { this.parent.setView('ProjectSetup'); } }} value="Setup a new Project"></input>
             </div>
         );
+    }
+
+    public serialize(): StartupPageProps {
+        return {};
     }
 }
