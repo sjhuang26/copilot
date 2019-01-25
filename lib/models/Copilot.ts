@@ -44,7 +44,7 @@ export class Copilot {
     */
     public fastForward( branchName: string, ): Promise<Copilot> {
         const promise = new Promise<Copilot>((resolve, reject) => {
-            reject(new MethodNotImplementedError("Copilot::loadProject"));
+            reject(new MethodNotImplementedError("Copilot::fastForward"));
         }); 
 
         return promise;

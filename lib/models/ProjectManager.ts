@@ -22,7 +22,7 @@ export class ProjectManager {
      */
     public runTest(testName: string): Promise<any> {
         const promise = new Promise<any>((resolve, reject) => {
-            reject(new MethodNotImplementedError("Copilot::setupProject"));
+            reject(new MethodNotImplementedError("ProjectManager::runTest"));
         }); 
 
         return promise;
@@ -35,7 +35,7 @@ export class ProjectManager {
      */
     public getManualPage(pageLocation: string): Promise<any> {
         const promise = new Promise<any>((resolve, reject) => {
-            reject(new MethodNotImplementedError("Copilot::setupProject"));
+            reject(new MethodNotImplementedError("ProjectManager::getManualPage"));
         }); 
 
         return promise;
