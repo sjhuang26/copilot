@@ -2,6 +2,7 @@ import * as etch from 'etch';
 import { ProjectSetupProps, ProjectSetup } from './ProjectSetup';
 import { StartupPageProps, StartupPage } from './StartupPage';
 import { EtchComponent } from './EtchComponent';
+import { Footer } from './Footer';
 
 export interface CopilotViewProps extends JSX.Props {
     hidden?: boolean;
@@ -41,6 +42,7 @@ export class CopilotView extends EtchComponent {
                 <div class={this.currentView == "startuppage" ? "" : "hidden"}>
                     <StartupPage {...this.props.startupPageProps} parent={this} ref="startupPage"/>
                 </div>
+                <Footer />
             </div>
         );
     }
