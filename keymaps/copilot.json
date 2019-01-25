@@ -1,5 +1,5 @@
 {
   "atom-workspace": {
-    "ctrl-alt-o": "copilot:toggle"
+    "ctrl-alt-o": "copilot:toggleSidebar"
   }
 }
