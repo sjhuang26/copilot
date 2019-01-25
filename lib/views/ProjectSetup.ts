@@ -88,14 +88,13 @@ export class ProjectSetup implements Component {
         const source = this.inputBox.value;
         const model = Copilot.getInstance();
         
-        const callback = function(result: boolean) {
-            if(result) {
-                atom.notifications.addSuccess("Project successfully set up!");
-            } else {
-                atom.notifications.addError("Uh oh! Something went wrong while trying to set up the project.");
-            }
-        }
-        
-        model.setupProject(callback, source);
+        const promise = model.setupProject(source);
+        promise.then((value) => {
+            atom.notifications.addSuccess("Project successfully set up!");
+        });
+        promise.catch((reason) => {
+            atom.notifications.addError("Uh oh! Something went wrong while trying to set up the project.");
+            atom.notifications.addError(reason.message);
+        })
     }
 }
