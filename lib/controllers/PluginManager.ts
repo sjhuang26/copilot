@@ -1,9 +1,9 @@
 import { CompositeDisposable, Panel } from 'atom';
 import { Copilot } from '../models/Copilot';
-import { CopilotViewState, CopilotView } from '../views/CopilotView';
+import { CopilotViewProps, CopilotView } from '../components/CopilotView';
 
 export interface CopilotState {
-    copilotViewState: CopilotViewState;
+    copilotViewProps: CopilotViewProps
 }
 
 /**
@@ -12,7 +12,7 @@ export interface CopilotState {
  */
 export class PluginManager {
     copilotView: CopilotView;
-    panel: Panel<HTMLElement>;
+    panel: Panel<CopilotView>;
     subscriptions: CompositeDisposable;
     
     constructor() {
@@ -24,9 +24,10 @@ export class PluginManager {
         Copilot.initialize();
         
         // Create sidebar
-        this.copilotView = new CopilotView(state ? state.copilotViewState : null);
+        // this.copilotView = new CopilotView(state ? state.copilotViewState : null);
+        this.copilotView = new CopilotView(state ? state.copilotViewProps : {});
         this.panel = atom.workspace.addRightPanel({
-            item: this.copilotView.getElement(),
+            item: this.copilotView,
             visible: true
         });
 
@@ -48,7 +49,7 @@ export class PluginManager {
     
     serialize() {
         return {
-            copilotViewState: this.copilotView.serialize()
+            copilotViewProps: this.copilotView.serialize()
         };
     }
     
