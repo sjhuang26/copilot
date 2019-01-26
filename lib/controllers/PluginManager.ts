@@ -26,14 +26,9 @@ export class PluginManager {
         state = state || {};
         
         // Create sidebar
-        // this.copilotView = new CopilotView(state ? state.copilotViewState : null);
         this.copilotView = new CopilotView(state.copilotViewProps || {});
-        this.panel = atom.workspace.addRightPanel({
-            item: this.copilotView,
-            visible: true
-        });
+        atom.workspace.open( this.copilotView );
 
-        
         // Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
         this.subscriptions = new CompositeDisposable();
         
@@ -56,10 +51,6 @@ export class PluginManager {
     }
     
     toggleSidebar() {
-        if(this.copilotView.isVisible()) {
-            this.copilotView.hide();
-        } else {
-            this.copilotView.show();
-        }
+        atom.workspace.toggle(this.copilotView); 
     }
 }

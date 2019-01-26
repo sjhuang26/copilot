@@ -19,23 +19,29 @@ export interface CopilotViewProps extends JSX.Props {
 export class CopilotView extends EtchComponent {
     public props: CopilotViewProps;
 
-    private hidden: boolean;
     private currentView: string; 
 
     constructor(props: CopilotViewProps) {
         super(props);
 
         // Loading personal props
-        this.hidden = props.hidden;
         this.setView(props.currentView || "StartupPage", false);
 
         // Initialization
         etch.initialize(this);
     }
 
+    getTitle(): string {
+        return "Copilot";
+    }
+
+    getDefaultLocation(): string {
+        return "right";
+    }
+
     render(): JSX.Element {
         return (
-            <div class={`copilot ${this.hidden ? "hidden" : ""}`}>
+            <div class="copilot">
                 <div class={this.currentView == "projectsetup" ? "" : "hidden"}>
                     <ProjectSetup {...this.props.projectSetupProps} parent={this} ref="projectSetup"/>
                 </div>
@@ -49,7 +55,6 @@ export class CopilotView extends EtchComponent {
 
     serialize(): CopilotViewProps {
         return {
-            hidden: this.hidden,
             currentView: this.currentView,
 
             projectSetupProps: this.refs.projectSetup.serialize(),
@@ -71,19 +76,5 @@ export class CopilotView extends EtchComponent {
         if(updateNow === undefined || updateNow) {
             etch.update(this);
         }
-    }
-    
-    isVisible(): boolean {
-        return !this.hidden;
-    }
-    
-    show(): void {
-        this.hidden = false;
-        etch.update(this);
-    }
-    
-    hide(): void {
-        this.hidden = true;
-        etch.update(this);
     }
 }
