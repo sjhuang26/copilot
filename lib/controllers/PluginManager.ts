@@ -12,7 +12,6 @@ export interface CopilotState {
  */
 export class PluginManager {
     copilotView: CopilotView;
-    panel: Panel<CopilotView>;
     subscriptions: CompositeDisposable;
     
     constructor() {
@@ -39,7 +38,6 @@ export class PluginManager {
     }
     
     deactivate() {
-        this.panel.destroy();
         this.subscriptions.dispose();
         this.copilotView.destroy();
     }
