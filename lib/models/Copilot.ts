@@ -12,6 +12,14 @@ export class Copilot {
     }
     
     /**
+     * Sets the root folder for the current project
+     * @param path Path to the new root
+     */
+    public setProjectRoot(path: string): void {
+        throw new MethodNotImplementedError("Copilot::setProjectRoot");
+    }
+
+    /**
     * Sets up a new project for the specified curriculum in the current folder.
     * @param location The location of the folder or url of the repo that contains the curriculum/project to load
     * @param target The location on the disk to initial the new project
