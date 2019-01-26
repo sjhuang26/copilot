@@ -41,39 +41,39 @@ export class CopilotView extends EtchComponent {
     render(): JSX.Element {
         return (
             <div class="copilot">
-            <div class={this.currentView == "projectsetup" ? "" : "hidden"}>
-            <ProjectSetup {...this.props.projectSetupProps} parent={this} ref="projectSetup"/>
+                <div class={this.currentView == "projectsetup" ? "" : "hidden"}>
+                <ProjectSetup {...this.props.projectSetupProps} parent={this} ref="projectSetup"/>
+                </div>
+                <div class={this.currentView == "startuppage" ? "" : "hidden"}>
+                <StartupPage {...this.props.startupPageProps} parent={this} ref="startupPage"/>
+                </div>
+                <Footer />
             </div>
-            <div class={this.currentView == "startuppage" ? "" : "hidden"}>
-            <StartupPage {...this.props.startupPageProps} parent={this} ref="startupPage"/>
-            </div>
-            <Footer />
-            </div>
-            );
-        }
-        
-        serialize(): CopilotViewProps {
-            return {
-                currentView: this.currentView,
-                
-                projectSetupProps: this.refs.projectSetup.serialize(),
-                startupPageProps: this.refs.startupPage.serialize()
-            }
-        }
-        
-        /**
-        * Sets the view to the specified view.
-        * @param viewName Can be one of:
-        * *ProjectSetup
-        * *StartupPage
-        * @param updateNow Controls whether the component should update immediately to
-        * reflect the changed view. True by default.
-        */
-        setView(viewName: string, updateNow?: boolean): void {
-            this.currentView = viewName.toLowerCase(); 
+        );
+    }
+    
+    serialize(): CopilotViewProps {
+        return {
+            currentView: this.currentView,
             
-            if(updateNow === undefined || updateNow) {
-                etch.update(this);
-            }
+            projectSetupProps: this.refs.projectSetup.serialize(),
+            startupPageProps: this.refs.startupPage.serialize()
         }
     }
+    
+    /**
+    * Sets the view to the specified view.
+    * @param viewName Can be one of:
+    * *ProjectSetup
+    * *StartupPage
+    * @param updateNow Controls whether the component should update immediately to
+    * reflect the changed view. True by default.
+    */
+    setView(viewName: string, updateNow?: boolean): void {
+        this.currentView = viewName.toLowerCase(); 
+        
+        if(updateNow === undefined || updateNow) {
+            etch.update(this);
+        }
+    }
+}
