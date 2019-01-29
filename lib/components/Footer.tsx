@@ -10,7 +10,9 @@ export class Footer extends EtchComponent {
     render(): JSX.Element {
         return (
             <div class="copilot-footer">
-                <img src="atom://copilot/images/logo-white.svg" class="copilot-brand" /> 
+                <a href="https://codingandcommunity.org">
+                    <img src="atom://copilot/images/logo-white.svg" class="copilot-brand" /> 
+                </a>
             </div>
         );
     }
