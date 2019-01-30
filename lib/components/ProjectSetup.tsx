@@ -4,7 +4,6 @@ import { Copilot } from '../models/Copilot'
 import { EtchComponent } from './EtchComponent';
 
 export interface ProjectSetupProps extends JSX.Props {
-    parent?: CopilotView;
     inputBox?: string;
 }
 
@@ -18,12 +17,8 @@ export class ProjectSetup extends EtchComponent {
     
     public constructor(props: ProjectSetupProps) {
         super(props);
-        if(!props.parent) {
-            throw new Error("Parent not defined!");
-        }
         
         this.loadProject = this.loadProject.bind(this);
-        this.parent = props.parent;
         
         etch.initialize(this);
     }
@@ -34,7 +29,6 @@ export class ProjectSetup extends EtchComponent {
                 <h2>Setup a new project!</h2>
                 Project source: <input type="text" class="input-text" ref="inputbox"></input>
                 <input type="button" class="btn" on={{click: this.loadProject}} value="Go!"></input>
-                <input type="button" class="btn" on={{click: () => { this.parent.setView('StartupPage'); } }} value="Back"></input>
             </div>
             );
         }

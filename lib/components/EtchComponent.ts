@@ -7,6 +7,8 @@ export abstract class EtchComponent implements JSX.ElementClass {
         this.refs = {};
     }
 
+    public abstract render(): JSX.Element;
+
     public update(props: JSX.Props, children?: JSX.Element[]): Promise<void> {
         this.props = {...this.props, ...props};
         return etch.update(this);

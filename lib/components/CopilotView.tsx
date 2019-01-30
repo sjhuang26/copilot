@@ -3,12 +3,14 @@ import { ProjectSetupProps, ProjectSetup } from './ProjectSetup';
 import { StartupPageProps, StartupPage } from './StartupPage';
 import { EtchComponent } from './EtchComponent';
 import { Footer } from './Footer';
+import { ReadoutPreview, ReadoutPreviewProps } from './ReadoutPreview';
 
 export interface CopilotViewProps extends JSX.Props {
     currentView?: string; 
     
     projectSetupProps?: ProjectSetupProps;
     startupPageProps?: StartupPageProps;
+    readoutPreviewProps?: ReadoutPreviewProps;
 }
 
 /**
@@ -41,12 +43,19 @@ export class CopilotView extends EtchComponent {
     render(): JSX.Element {
         return (
             <div class="copilot">
+                <a on={{click: () => { this.setView("StartupPage") } }} 
+                    class={this.currentView == "startuppage" ? "hidden" : ""}>&lt; Home</a>
+
                 <div class={this.currentView == "projectsetup" ? "" : "hidden"}>
-                <ProjectSetup {...this.props.projectSetupProps} parent={this} ref="projectSetup"/>
+                    <ProjectSetup {...this.props.projectSetupProps} ref="projectSetup"/>
                 </div>
                 <div class={this.currentView == "startuppage" ? "" : "hidden"}>
-                <StartupPage {...this.props.startupPageProps} parent={this} ref="startupPage"/>
+                    <StartupPage {...this.props.startupPageProps} parent={this} ref="startupPage"/>
                 </div>
+                <div class={this.currentView == "readoutpreview" ? "" : "hidden"}>
+                    <ReadoutPreview {...this.props.readoutPreviewProps} ref="readoutPreview"/>
+                </div>
+
                 <Footer />
             </div>
         );
@@ -57,15 +66,17 @@ export class CopilotView extends EtchComponent {
             currentView: this.currentView,
             
             projectSetupProps: this.refs.projectSetup.serialize(),
-            startupPageProps: this.refs.startupPage.serialize()
+            startupPageProps: this.refs.startupPage.serialize(),
+            readoutPreviewProps: this.refs.readoutPreview.serialize()
         }
     }
     
     /**
     * Sets the view to the specified view.
     * @param viewName Can be one of:
-    * *ProjectSetup
-    * *StartupPage
+    * * ProjectSetup
+    * * StartupPage
+    * * ReadoutPreview
     * @param updateNow Controls whether the component should update immediately to
     * reflect the changed view. True by default.
     */
