@@ -42,17 +42,19 @@ export class CopilotView extends EtchComponent {
     
     render(): JSX.Element {
         return (
-            <div class="copilot">
-                <a on={{click: () => { this.setView("StartupPage") } }} 
-                    class={this.currentView == "startuppage" ? "hidden" : ""}>&lt; Home</a>
+            <div class="copilot box">
+                <div class="header">
+                    <a on={{click: () => { this.setView("StartupPage") } }} 
+                        class={this.currentView == "startuppage" ? "hidden" : ""}>&lt; Home</a>
+                </div>
 
-                <div class={this.currentView == "projectsetup" ? "" : "hidden"}>
+                <div class={"section " + (this.currentView == "projectsetup" ? "" : "hidden")}>
                     <ProjectSetup {...this.props.projectSetupProps} ref="projectSetup"/>
                 </div>
-                <div class={this.currentView == "startuppage" ? "" : "hidden"}>
+                <div class={"section " + (this.currentView == "startuppage" ? "" : "hidden")}>
                     <StartupPage {...this.props.startupPageProps} parent={this} ref="startupPage"/>
                 </div>
-                <div class={this.currentView == "readoutpreview" ? "" : "hidden"}>
+                <div class={"section " + (this.currentView == "readoutpreview" ? "" : "hidden")}>
                     <ReadoutPreview {...this.props.readoutPreviewProps} ref="readoutPreview"/>
                 </div>
 

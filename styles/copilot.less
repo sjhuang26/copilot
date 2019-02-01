@@ -8,9 +8,33 @@
     padding: 15px;
 }
 
+.box {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+}
+
+.box .header {
+    flex: 0 1 auto;
+    width: 100%;
+}
+
+.box .section {
+    flex: 1 1 auto;
+    width: 100%;
+    overflow: hidden;
+
+    display: flex;
+}
+
+.box .section.scroll {
+    height: 0px;
+    overflow: scroll;
+}
+
 .copilot-footer {
-    position: absolute;
-    bottom: 0;
+    flex: 0 1 auto;
     width: 100%;
     margin-bottom: 10px;
     padding-right: 15px;
