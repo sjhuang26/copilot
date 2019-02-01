@@ -29,12 +29,16 @@ export class ReadoutPreview extends EtchComponent {
 
     render(): JSX.Element {
         return (
-            <div>
-                <h2>Preview a markdown file</h2> 
-                <input type="button" class="btn" value="Open" on={{click: this.selectFile}} /> { this.currentFile || "No file selected" } <br/>
-                <input type="button" class="btn" value="Go!" on={{click: this.loadReadout}} />
-                <hr/>
-                <MarkdownRenderer markdown={this.markdown} ref="markdownRenderer" />
+            <div class="box">
+                <div class="header">
+                    <h2>Preview a markdown file</h2> 
+                    <input type="button" class="btn" value="Open" on={{click: this.selectFile}} /> { this.currentFile || "No file selected" } <br/>
+                    <input type="button" class="btn" value="Go!" on={{click: this.loadReadout}} />
+                    <hr/>
+                </div>
+                <div class="section scroll">
+                    <MarkdownRenderer markdown={this.markdown} ref="markdownRenderer" />
+                </div>
             </div>
         );
     }
