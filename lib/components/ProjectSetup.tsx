@@ -27,8 +27,8 @@ export class ProjectSetup extends EtchComponent {
         return (
             <div>
                 <h2>Setup a new project!</h2>
-                Project source: <input type="text" class="input-text" ref="inputbox"></input>
-                <input type="button" class="btn" on={{click: this.loadProject}} value="Go!"></input>
+                Project source: <input type="text" class="input-text native-key-bindings" ref="inputbox" />
+                <input type="button" class="btn" on={{click: this.loadProject}} value="Go!" />
             </div>
             );
         }
