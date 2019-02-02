@@ -57,7 +57,6 @@ export class CopilotView extends EtchComponent {
                 <div class={"section " + (this.currentView == "readoutpreview" ? "" : "hidden")}>
                     <ReadoutPreview {...this.props.readoutPreviewProps} ref="readoutPreview"/>
                 </div>
-
                 <Footer />
             </div>
         );
