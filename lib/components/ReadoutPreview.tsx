@@ -7,22 +7,20 @@ import { MarkdownRenderer } from './MarkdownRenderer';
 
 export interface ReadoutPreviewProps extends JSX.Props {
     currentFile?: string;
+    markdown: string;
 }
 
 export class ReadoutPreview extends EtchComponent {
-    public props: ReadoutPreviewProps;
-
+    public readonly props: ReadoutPreviewProps;
     private parent: CopilotView;
-    private currentFile: string;
-    private markdown:string;
 
     constructor(props: ReadoutPreviewProps) {
         super(props);
 
         this.selectFile = this.selectFile.bind(this);
         this.loadReadout = this.loadReadout.bind(this);
-        this.currentFile = props.currentFile;
-        this.markdown = "Load a file";
+        this.props.currentFile = props.currentFile;
+        this.props.markdown = "Load a file";
 
         etch.initialize(this);
     }
@@ -31,13 +29,13 @@ export class ReadoutPreview extends EtchComponent {
         return (
             <div class="box">
                 <div class="header">
-                    <h2>Preview a markdown file</h2> 
-                    <input type="button" class="btn" value="Open" on={{click: this.selectFile}} /> { this.currentFile || "No file selected" } <br/>
+                    <h2>Preview a markdown file</h2>
+                    <input type="button" class="btn" value="Open" on={{click: this.selectFile}} /> { this.props.currentFile || "No file selected" } <br/>
                     <input type="button" class="btn" value="Go!" on={{click: this.loadReadout}} />
                     <hr/>
                 </div>
                 <div class="section scroll">
-                    <MarkdownRenderer markdown={this.markdown} ref="markdownRenderer" />
+                    <MarkdownRenderer markdown={this.props.markdown} ref="markdownRenderer" />
                 </div>
             </div>
         );
@@ -45,29 +43,34 @@ export class ReadoutPreview extends EtchComponent {
 
     serialize(): ReadoutPreviewProps {
         return {
-            currentFile: this.currentFile
+            currentFile: this.props.currentFile,
+            markdown: this.props.markdown
         }
     }
 
     selectFile() {
         const remote = electron.remote;
         var files = remote.dialog.showOpenDialog(remote.getCurrentWindow(), {properties: ["openFile"]});
-        this.currentFile = files[0];
+        if (files) this.update({currentFile: files[0]});
     }
 
     loadReadout() {
-        this.markdown = "Loading...";
-        this.refs.markdownRenderer.update({markdown: this.markdown});
+        this.update({markdown: "Loading..."});
 
         const self = this;
-        const file = new File(this.currentFile);
+        const file = new File(this.props.currentFile);
         file.read().then((value) => {
-            self.markdown = value;
-            this.refs.markdownRenderer.update({markdown: self.markdown});
+            self.update({markdown: value})
         }).catch((reason) => {
             atom.notifications.addError(reason);
-            self.markdown = "Error loading markdown";
-            this.refs.markdownRenderer.update({markdown: self.markdown});
+            self.update({markdown: "Error loading markdown"});
         });
+    }
+
+    public update(props: Partial<ReadoutPreviewProps>, children?: JSX.Element[]): Promise<void> {
+        if (this.props.markdown != props.markdown) {
+            this.refs.markdownRenderer.update({markdown: this.props.markdown})
+        }
+        return super.update(props, children)
     }
 }
