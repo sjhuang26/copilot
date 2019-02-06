@@ -28,9 +28,10 @@ export class StartupPage extends EtchComponent {
     public render(): JSX.Element {
         return (
             <div>
-                <h2>Hello! I will be your Copilot.</h2>                
+                <h2>Hello! I will be your Copilot.</h2>
                 <input type="button" class="btn" on={{click: () => { this.parent.setView('ProjectSetup'); } }} value="Setup a new Project"></input>
                 <input type="button" class="btn" on={{click: () => { this.parent.setView('ReadoutPreview'); } }} value="Preview a markdown file"></input>
+                <input type="button" class="btn" on={{click: () => { this.parent.setView('BrowseProjects'); } }} value="Browse Projects"></input>
             </div>
         );
     }
