@@ -12,6 +12,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/atom": "^1.31.0",
+    "@types/axios": "^0.14.0",
     "@types/electron": "^1.6.10",
     "@types/jasmine": "^2.8.11",
     "@types/showdown": "^1.9.2",
