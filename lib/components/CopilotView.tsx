@@ -4,13 +4,15 @@ import { StartupPageProps, StartupPage } from './StartupPage';
 import { EtchComponent } from './EtchComponent';
 import { Footer } from './Footer';
 import { ReadoutPreview, ReadoutPreviewProps } from './ReadoutPreview';
+import { BrowseProjects, BrowseProjectsProps } from './BrowseProjects';
 
 export interface CopilotViewProps extends JSX.Props {
-    currentView?: string; 
-    
+    currentView?: string;
+
     projectSetupProps?: ProjectSetupProps;
     startupPageProps?: StartupPageProps;
     readoutPreviewProps?: ReadoutPreviewProps;
+    browseProjectsProps?: BrowseProjectsProps;
 }
 
 /**
@@ -19,32 +21,32 @@ export interface CopilotViewProps extends JSX.Props {
  */
 export class CopilotView extends EtchComponent {
     public props: CopilotViewProps;
-    
-    private currentView: string; 
-    
+
+    private currentView: string;
+
     constructor(props: CopilotViewProps) {
         super(props);
-        
+
         // Loading personal props
         this.setView(props.currentView || "StartupPage", false);
-        
+
         // Initialization
         etch.initialize(this);
     }
-    
+
     getTitle(): string {
         return "Copilot";
     }
-    
+
     getDefaultLocation(): string {
         return "right";
     }
-    
+
     render(): JSX.Element {
         return (
             <div class="copilot box">
                 <div class="header">
-                    <a on={{click: () => { this.setView("StartupPage") } }} 
+                    <a on={{click: () => { this.setView("StartupPage") } }}
                         class={this.currentView == "startuppage" ? "hidden" : ""}>&lt; Home</a>
                 </div>
 
@@ -57,21 +59,25 @@ export class CopilotView extends EtchComponent {
                 <div class={"section " + (this.currentView == "readoutpreview" ? "" : "hidden")}>
                     <ReadoutPreview {...this.props.readoutPreviewProps} ref="readoutPreview"/>
                 </div>
+                <div class={"section " + (this.currentView == "browseprojects" ? "" : "hidden")}>
+                    <BrowseProjects {...this.props.browseProjectsProps} ref="browseProjects"/>
+                </div>
                 <Footer />
             </div>
         );
     }
-    
+
     serialize(): CopilotViewProps {
         return {
             currentView: this.currentView,
-            
+
             projectSetupProps: this.refs.projectSetup.serialize(),
             startupPageProps: this.refs.startupPage.serialize(),
-            readoutPreviewProps: this.refs.readoutPreview.serialize()
+            readoutPreviewProps: this.refs.readoutPreview.serialize(),
+            browseProjectsProps: this.refs.browseProjects.serialize()
         }
     }
-    
+
     /**
     * Sets the view to the specified view.
     * @param viewName Can be one of:
@@ -82,8 +88,8 @@ export class CopilotView extends EtchComponent {
     * reflect the changed view. True by default.
     */
     setView(viewName: string, updateNow?: boolean): void {
-        this.currentView = viewName.toLowerCase(); 
-        
+        this.currentView = viewName.toLowerCase();
+
         if(updateNow === undefined || updateNow) {
             etch.update(this);
         }
