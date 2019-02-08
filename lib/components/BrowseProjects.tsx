@@ -81,7 +81,7 @@ export class BrowseProjects extends EtchComponent {
     startProject(source: string): void {
         const model = Copilot.getInstance();
 
-        const promise = model.setupProject(source);
+        const promise = model.getEnvironmentManager().setupProject(source);
         promise.then((value) => {
             atom.notifications.addSuccess("Project successfully set up!");
         });
