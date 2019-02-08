@@ -1,5 +1,12 @@
-import { MethodNotImplementedError } from './Errors';
-import { ProjectManager } from './ProjectManager';
+import { TestManager, TestState } from './TestManager';
+import { EnvironmentManager, EnvironmentState } from './EnvironmentManager';
+import { WarpDrive, WarpDriveState } from './WarpDrive';
+
+export interface CopilotState {
+    envState?: EnvironmentState;
+    testState?: TestState;
+    warpDriveState?: WarpDriveState;
+}
 
 /**
 * Contains the logic for main application. Handles persistend stuff (i.e. loading / saving / updating projects).
@@ -7,71 +14,65 @@ import { ProjectManager } from './ProjectManager';
 */
 export class Copilot {
     private static instance: Copilot;
-    private constructor() {
-        // throw new Error("Method not implemented!");        
-    }
-    
-    /**
-     * Sets the root folder for the current project
-     * @param path Path to the new root
-     */
-    public setProjectRoot(path: string): void {
-        throw new MethodNotImplementedError("Copilot::setProjectRoot");
+
+    private envMan: EnvironmentManager;
+    private testManager: TestManager;
+    private warpDrive: WarpDrive;
+
+    private constructor(state?: CopilotState) {
+        if(!state) state = {};
+
+        this.envMan = new EnvironmentManager(this, state.envState);
+        this.testManager = new TestManager(this, state.testState);
+        this.warpDrive = new WarpDrive(this, state.warpDriveState);
     }
 
-    /**
-    * Sets up a new project for the specified curriculum in the current folder.
-    * @param location The location of the folder or url of the repo that contains the curriculum/project to load
-    * @param target The location on the disk to initial the new project
-    * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
-    */
-    public setupProject(location: string, target?: string ): Promise<Copilot> {
-        const promise = new Promise<Copilot>((resolve, reject) => {
-            reject(new MethodNotImplementedError("Copilot::setupProject"));
-        }); 
+    public init(): Promise<void> {
+        const promise = new Promise<void>((resolve, reject) => {
+            this.envMan.init().then(() => {
 
-        return promise;
-    }
-    
-    /**
-    * Loads a project from the `curriculum.json`. 
-    * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
-    */
-    public loadProject(): Promise<Copilot> {
-        const promise = new Promise<Copilot>((resolve, reject) => {
-            reject(new MethodNotImplementedError("Copilot::loadProject"));
-        }); 
+                let p1 = this.testManager.init();
+                let p2 = this.warpDrive.init();
+
+                Promise.all([p1, p2]).then( ()=> {
+                    resolve();
+                }).catch((reason) => {
+                    reject(reason);
+                })
+            }); 
+        })
 
         return promise;
     }
-    
-    /**
-    * Fast-forwards to the specified branch, if it is legal* (will be defined better later)
-    * @param branchName The name of the branch to fast-forward to
-    * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
-    */
-    public fastForward( branchName: string, ): Promise<Copilot> {
-        const promise = new Promise<Copilot>((resolve, reject) => {
-            reject(new MethodNotImplementedError("Copilot::fastForward"));
-        }); 
 
-        return promise;
+    public serialize(): CopilotState {
+        return {
+            envState: this.envMan.serialize(),
+            testState: this.envMan.serialize(),
+            warpDriveState: this.envMan.serialize()
+        };
     }
-    
-    /**
-    * Gets info on the current project, and null if no project is currently loaded
-    */
-    public getProject(): ProjectManager {
-        throw new Error("Method not implemented!");        
+
+    public getEnvironmentManager(): EnvironmentManager {
+        return this.envMan;
     }
-    
+
+    public getTestManager(): TestManager {
+        return this.testManager;
+    }
+
+    public getWarpDrive(): WarpDrive {
+        return this.warpDrive;
+    }
+
     /**
      * Initialized an instance of the app. Currently just creates a new insteance, but
      * in future versions will read from files and objects containing initialization
      * info
      */
-    static initialize(): void {
-        this.instance = new Copilot();
+    static initialize(state?: CopilotState): Promise<void> {
+        this.instance = new Copilot(state);
+        return this.instance.init();
     }
 
     static getInstance(): Copilot {

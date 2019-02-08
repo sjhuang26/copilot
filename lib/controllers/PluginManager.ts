@@ -1,9 +1,10 @@
 import { CompositeDisposable, Panel } from 'atom';
-import { Copilot } from '../models/Copilot';
+import { CopilotState, Copilot } from '../models/Copilot';
 import { CopilotViewProps, CopilotView } from '../components/CopilotView';
 
-export interface CopilotState {
-    copilotViewProps?: CopilotViewProps
+export interface PluginState {
+    copilotState?: CopilotState;
+    copilotViewProps?: CopilotViewProps;
 }
 
 /**
@@ -18,12 +19,12 @@ export class PluginManager {
         
     }
     
-    activate(state: CopilotState) {
-        // Initialize model
-        Copilot.initialize();
-
+    activate(state: PluginState) {
         state = state || {};
         
+        // Initialize model
+        Copilot.initialize(state.copilotState);
+
         // Create sidebar
         this.copilotView = new CopilotView(state.copilotViewProps || {});
         atom.workspace.open( this.copilotView );
@@ -44,6 +45,7 @@ export class PluginManager {
     
     serialize() {
         return {
+            copilotState: Copilot.getInstance().serialize(),
             copilotViewProps: this.copilotView.serialize()
         };
     }

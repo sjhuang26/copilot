@@ -41,8 +41,8 @@ export class ProjectSetup extends EtchComponent {
             const source = this.refs.inputbox.value;
             const model = Copilot.getInstance();
             
-            const promise = model.setupProject(source);
-            promise.then((value) => {
+            const promise = model.getEnvironmentManager().setupProject(source);
+            promise.then(() => {
                 atom.notifications.addSuccess("Project successfully set up!");
             });
             promise.catch((reason) => {
