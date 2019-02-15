@@ -30,15 +30,12 @@ export class Copilot {
     public init(): Promise<void> {
         const promise = new Promise<void>((resolve, reject) => {
             this.envMan.init().then(() => {
+                const initTestManagerPromise = this.testManager.init();
+                const initWarpDrivePromise = this.warpDrive.init();
 
-                let p1 = this.testManager.init();
-                let p2 = this.warpDrive.init();
-
-                Promise.all([p1, p2]).then( ()=> {
-                    resolve();
-                }).catch((reason) => {
-                    reject(reason);
-                })
+                Promise.all([initTestManagerPromise, initWarpDrivePromise])
+                    .then(() => resolve())
+                    .catch((reason) => reject(reason));
             }); 
         })
 
