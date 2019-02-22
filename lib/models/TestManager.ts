@@ -29,7 +29,8 @@ export class TestManager {
      */
     public init(): Promise<void> {
         const promise = new Promise<void>((resolve, reject) => {
-            reject(new MethodNotImplementedError("TestManager::init"));
+            // reject(new MethodNotImplementedError("TestManager::init"));
+            resolve()
         }); 
 
         return promise;
