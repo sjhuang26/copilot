@@ -1,5 +1,6 @@
 import { MethodNotImplementedError } from "./Errors";
 import { Copilot } from "./Copilot";
+import * as Git from "nodegit"
 
 export interface CurriculumInfo {
 
@@ -10,8 +11,11 @@ export interface EnvironmentState {
 }
 
 export class EnvironmentManager {
+    private parent: Copilot;
+    private projectRoot: string;
+
     constructor(parent: Copilot, state?: EnvironmentState) {
-        // throw new MethodNotImplementedError("EnvironmentManager::constructor");
+        this.parent = parent;
     }
 
    /**
@@ -38,14 +42,14 @@ export class EnvironmentManager {
      * @param path Path to the new root
      */
     public setProjectRoot(path: string): void {
-        throw new MethodNotImplementedError("EnvironmentManager::setProjectRoot");
+        this.projectRoot = path;
     }
 
     /**
      * Gets the root folder for the current project
      */
     public getProjectRoot(): string {
-        throw new MethodNotImplementedError("EnvironmentManager::getProjectRoot");
+        return this.projectRoot
     }
 
     /**
@@ -55,8 +59,15 @@ export class EnvironmentManager {
     * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
     */
     public setupProject(location: string, target?: string ): Promise<void> {
+        const self = this;
         const promise = new Promise<void>((resolve, reject) => {
-            reject(new MethodNotImplementedError("EnvironmentManager::setupProject"));
+            const clonePromise = Git.Clone.clone(location, this.getProjectRoot());
+
+            Promise.all([clonePromise])
+                .then(() => {
+                    self.parent.init().then(() => resolve());
+                })
+                .catch((reason) => reject(reason));
         });
 
         return promise;
