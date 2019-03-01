@@ -2,37 +2,6 @@ import { MethodNotImplementedError } from "./Errors";
 import { Copilot } from "./Copilot";
 import * as fs from 'fs';
 
-export interface Stage {
-    /**
-     * ID of the stage
-     */
-    id: number;
-
-    /**
-     * ID of the parent stage
-     */
-    parent: number;
-
-    /**
-     * ID's of the child stages
-     */
-    children: Array<number>
-
-    /**
-     * A list of files that are used to test
-     */
-    tests: Array<string>
-
-    /**
-     * The file with the instructions for this step
-     */
-    instructions: string
-
-    /**
-     * The location of the stage on the filesystem
-     */
-    location: string
-}
 
 export interface WarpDriveState {
 
@@ -40,7 +9,6 @@ export interface WarpDriveState {
 
 export class WarpDrive {
     private parent: Copilot;
-    private stages: Array<Stage>
 
     constructor(parent: Copilot, state?: WarpDriveState) {
         this.parent = parent;
@@ -53,45 +21,7 @@ export class WarpDrive {
      * to EnvironmentManager
      */
     public init(): Promise<void> {
-        const self = this;
-        const promise = new Promise<void>((resolve, reject) => {
-            const root = self.parent.getEnvironmentManager().getCurriculumRoot();
-            const path = root + '/stages.json'
-
-            const parseStagesPromise = new Promise<void>((resolve1, reject1) => {
-                function parseData(data: string) {
-                    let obj: any;
-                    try {
-                        obj = JSON.parse(data);
-                    } catch (e) {
-                        return reject1(e);
-                    }
-
-                    self.stages = obj as Array<Stage>;
-                    return resolve1();
-                }
-
-                fs.exists(path, (exists) => {
-                    if(exists) {
-                        fs.readFile(path, 'utf8', (err, data) => {
-                            if(err) return reject1(err);
-                            else return parseData(data);
-                        });
-                    } else {
-                        self.stages = null;
-                        resolve1();
-                    }
-                });
-            });
-
-            Promise.all([parseStagesPromise]).then( ()=> {
-                resolve();
-            }).catch((reason) => {
-                reject(reason);
-            })
-        }); 
-
-        return promise;
+        return new Promise<void>( (resolve, reject) => resolve() );
     }
    
     public serialize(): WarpDriveState {
@@ -109,9 +39,5 @@ export class WarpDrive {
         }); 
 
         return promise;
-    }
-
-    public getStages(): Array<Stage> {
-        return this.stages;
     }
 }

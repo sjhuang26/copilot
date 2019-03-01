@@ -1,9 +1,43 @@
 import { MethodNotImplementedError } from "./Errors";
 import { Copilot } from "./Copilot";
+import * as fs from "fs";
 import * as Git from "nodegit"
+import { resolve } from "path";
 
 export interface CurriculumInfo {
     
+}
+
+export interface Stage {
+    /**
+    * ID of the stage
+    */
+    id: number;
+    
+    /**
+    * ID of the parent stage
+    */
+    parent: number;
+    
+    /**
+    * ID's of the child stages
+    */
+    children: Array<number>
+    
+    /**
+    * A list of files that are used to test
+    */
+    tests: Array<string>
+    
+    /**
+    * The file with the instructions for this step
+    */
+    instructions: string
+    
+    /**
+    * The location of the stage on the filesystem
+    */
+    location: string
 }
 
 export interface EnvironmentState {
@@ -14,6 +48,8 @@ export class EnvironmentManager {
     private parent: Copilot;
     private projectRoot: string;
     private curriculumRoot: string;
+    
+    private stages: Array<Stage>;
     
     constructor(parent: Copilot, state?: EnvironmentState) {
         this.parent = parent;
@@ -26,12 +62,37 @@ export class EnvironmentManager {
     * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
     */
     public init(): Promise<void> {
-        const promise = new Promise<void>((resolve, reject) => {
-            // reject(new MethodNotImplementedError("EnvironmentManager::loadProject"));
-            resolve();
-        }); 
+        const self = this;
+        const root = self.parent.getEnvironmentManager().getCurriculumRoot();
+        const path = root + '/stages.json'
         
-        return promise;
+        const parseStagesPromise = new Promise<void>((resolve, reject) => {
+            function parseData(data: string) {
+                let obj: any;
+                try {
+                    obj = JSON.parse(data);
+                } catch (e) {
+                    return reject(e);
+                }
+                
+                self.stages = obj as Array<Stage>;
+                return resolve();
+            }
+            
+            fs.exists(path, (exists) => {
+                if(exists) {
+                    fs.readFile(path, 'utf8', (err, data) => {
+                        if(err) return reject(err);
+                        else return parseData(data);
+                    });
+                } else {
+                    self.stages = null;
+                    resolve();
+                }
+            });
+        });
+        
+        return Promise.all([parseStagesPromise]).then(() => {});
     }
     
     public serialize(): EnvironmentState {
@@ -78,13 +139,13 @@ export class EnvironmentManager {
         const self = this;
         const clonePromise = Git.Clone.clone(location, curriculumTarget || this.getCurriculumRoot());
         
-        const projectSetupPromise = new Promise<void>((resolve1, reject1) => {
-            resolve1();
+        const projectSetupPromise = new Promise<void>((resolve, reject) => {
+            resolve();
         });
         
         return clonePromise
-        .then(() => projectSetupPromise)
-        .then(() => self.parent.init())
+            .then(() => projectSetupPromise)
+            .then(() => self.parent.init())
     }
     
     /**
@@ -92,5 +153,9 @@ export class EnvironmentManager {
     */
     public getCurriculumInfo(): CurriculumInfo {
         throw new MethodNotImplementedError("EnvironmentManager::getCurriculumInfo");
+    }
+    
+    public getStages(): Array<Stage> {
+        return this.stages;
     }
 }
