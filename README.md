@@ -13,18 +13,22 @@
     - [x] Integrate with Atom Editor
     - [x] Create Basic/Templace views
     - [ ] Create view for instructions
-    - ...
+    
+    ...
 - Model
     - [x] Coordinate initialization routine
     - Environment
         - [x] Automatically downloads curriculum repository from Git
         - [ ] Setup project directory
-        - ...
+        
+        ...
     - Testing
         - [ ] Plan testing framework
-        - ...
+        
+        ...
     - Warp Drive
         - [x] Parse stages.json
         - [ ] Merge changes from another stage into current stage
-        - ...
+        
+        ...
 
