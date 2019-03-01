@@ -27,6 +27,11 @@ export interface Stage {
      * The file with the instructions for this step
      */
     instructions: string
+
+    /**
+     * The location of the stage on the filesystem
+     */
+    location: string
 }
 
 export interface WarpDriveState {
@@ -50,7 +55,7 @@ export class WarpDrive {
     public init(): Promise<void> {
         const self = this;
         const promise = new Promise<void>((resolve, reject) => {
-            const root = self.parent.getEnvironmentManager().getProjectRoot();
+            const root = self.parent.getEnvironmentManager().getCurriculumRoot();
             const path = root + '/stages.json'
 
             const parseStagesPromise = new Promise<void>((resolve1, reject1) => {

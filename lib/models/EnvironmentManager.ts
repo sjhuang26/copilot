@@ -3,7 +3,7 @@ import { Copilot } from "./Copilot";
 import * as Git from "nodegit"
 
 export interface CurriculumInfo {
-
+    
 }
 
 export interface EnvironmentState {
@@ -14,12 +14,12 @@ export class EnvironmentManager {
     private parent: Copilot;
     private projectRoot: string;
     private curriculumRoot: string;
-
+    
     constructor(parent: Copilot, state?: EnvironmentState) {
         this.parent = parent;
     }
-
-   /**
+    
+    /**
     * Loads up the environment from json files 
     * Things it should do:
     * - Load and parse the curriculum.json into an object, which should be accessible with getCurriculumInfo
@@ -30,43 +30,43 @@ export class EnvironmentManager {
             // reject(new MethodNotImplementedError("EnvironmentManager::loadProject"));
             resolve();
         }); 
-
+        
         return promise;
     }
-
+    
     public serialize(): EnvironmentState {
         return {};
     }
-
+    
     /**
-     * Sets the folder that contains info for the various curriculums
-     */
+    * Sets the folder that contains info for the various curriculums
+    */
     public setCurriculumRoot(path: string): void {
         this.curriculumRoot = path;
     }
-
+    
     /**
-     * Sets the folder that contains info for the various curriculums
-     */
+    * Sets the folder that contains info for the various curriculums
+    */
     public getCurriculumRoot(): string {
         return this.curriculumRoot;
     }
-
+    
     /**
-     * Sets the root folder for the current project
-     * @param path Path to the new root
-     */
+    * Sets the root folder for the current project
+    * @param path Path to the new root
+    */
     public setProjectRoot(path: string): void {
         this.projectRoot = path;
     }
-
+    
     /**
-     * Gets the root folder for the current project
-     */
+    * Gets the root folder for the current project
+    */
     public getProjectRoot(): string {
         return this.projectRoot
     }
-
+    
     /**
     * Downloads a curriculum, sets up the file structure for the project, and sets up the environment as well.
     * @param location The location of the folder or url of the repo that contains the curriculum/project to load
@@ -76,22 +76,20 @@ export class EnvironmentManager {
     */
     public setupProject(location: string, projectTarget?: string, curriculumTarget?: string ): Promise<void> {
         const self = this;
-        const promise = new Promise<void>((resolve, reject) => {
-            const clonePromise = Git.Clone.clone(location, curriculumTarget || this.getCurriculumRoot());
-
-            Promise.all([clonePromise])
-                .then(() => {
-                    self.parent.init().then(() => resolve());
-                })
-                .catch((reason) => reject(reason));
+        const clonePromise = Git.Clone.clone(location, curriculumTarget || this.getCurriculumRoot());
+        
+        const projectSetupPromise = new Promise<void>((resolve1, reject1) => {
+            resolve1();
         });
-
-        return promise;
+        
+        return clonePromise
+        .then(() => projectSetupPromise)
+        .then(() => self.parent.init())
     }
-
+    
     /**
-     * Returns curriculum variables
-     */
+    * Returns curriculum variables
+    */
     public getCurriculumInfo(): CurriculumInfo {
         throw new MethodNotImplementedError("EnvironmentManager::getCurriculumInfo");
     }
