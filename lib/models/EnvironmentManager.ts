@@ -65,31 +65,13 @@ export class EnvironmentManager {
         const root = self.parent.getEnvironmentManager().getCurriculumRoot();
         const path = root + '/stages.json'
         
-        const parseStagesPromise = new Promise<void>((resolve, reject) => {
-            function parseData(data: string) {
-                let obj: any;
-                try {
-                    obj = JSON.parse(data);
-                } catch (e) {
-                    return reject(e);
-                }
-                
-                self.stages = obj as Array<Stage>;
-                return resolve();
-            }
-            
-            fs.exists(path, (exists) => {
-                if(exists) {
-                    fs.readFile(path, 'utf8', (err, data) => {
-                        if(err) return reject(err);
-                        else return parseData(data);
-                    });
-                } else {
-                    self.stages = null;
-                    resolve();
+        const parseStagesPromise = fs.pathExists(path)
+            .then((value) => {
+                if(value) {
+                    return fs.readJson(path)
+                        .then((value1) => self.stages = value1 as Array<Stage>);
                 }
             });
-        });
         
         return Promise.all([parseStagesPromise]).then(() => {});
     }
