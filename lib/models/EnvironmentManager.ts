@@ -13,6 +13,7 @@ export interface EnvironmentState {
 export class EnvironmentManager {
     private parent: Copilot;
     private projectRoot: string;
+    private curriculumRoot: string;
 
     constructor(parent: Copilot, state?: EnvironmentState) {
         this.parent = parent;
@@ -38,6 +39,20 @@ export class EnvironmentManager {
     }
 
     /**
+     * Sets the folder that contains info for the various curriculums
+     */
+    public setCurriculumRoot(path: string): void {
+        this.curriculumRoot = path;
+    }
+
+    /**
+     * Sets the folder that contains info for the various curriculums
+     */
+    public getCurriculumRoot(): string {
+        return this.curriculumRoot;
+    }
+
+    /**
      * Sets the root folder for the current project
      * @param path Path to the new root
      */
@@ -55,13 +70,14 @@ export class EnvironmentManager {
     /**
     * Downloads a curriculum, sets up the file structure for the project, and sets up the environment as well.
     * @param location The location of the folder or url of the repo that contains the curriculum/project to load
-    * @param target The location on the disk to initial the new project
+    * @param projectTarget The location on the disk to initialize the new project
+    * @param curriculumTarget The location on the disk to save to curriculum
     * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
     */
-    public setupProject(location: string, target?: string ): Promise<void> {
+    public setupProject(location: string, projectTarget?: string, curriculumTarget?: string ): Promise<void> {
         const self = this;
         const promise = new Promise<void>((resolve, reject) => {
-            const clonePromise = Git.Clone.clone(location, this.getProjectRoot());
+            const clonePromise = Git.Clone.clone(location, curriculumTarget || this.getCurriculumRoot());
 
             Promise.all([clonePromise])
                 .then(() => {
