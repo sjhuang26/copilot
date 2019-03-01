@@ -1,8 +1,7 @@
 import { MethodNotImplementedError } from "./Errors";
 import { Copilot } from "./Copilot";
-import * as fs from "fs";
+import * as fs from "fs-extra";
 import * as Git from "nodegit"
-import { resolve } from "path";
 
 export interface CurriculumInfo {
     
@@ -136,16 +135,21 @@ export class EnvironmentManager {
     * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
     */
     public setupProject(location: string, projectTarget?: string, curriculumTarget?: string ): Promise<void> {
-        const self = this;
-        const clonePromise = Git.Clone.clone(location, curriculumTarget || this.getCurriculumRoot());
+        const curriculumRoot = curriculumTarget || this.getCurriculumRoot();
+        const projectRoot = projectTarget || this.getProjectRoot();
         
-        const projectSetupPromise = new Promise<void>((resolve, reject) => {
-            resolve();
-        });
+        const self = this;
+        const clonePromise = Git.Clone.clone(location, curriculumRoot);
+        
+        const projectSetup = () => { 
+            const stages = self.getStages();
+            const stageLocation = curriculumRoot + '/' + stages[0].location;
+            return fs.copy(stageLocation, projectRoot, {errorOnExist: true} );
+        }
         
         return clonePromise
-            .then(() => projectSetupPromise)
             .then(() => self.parent.init())
+            .then(() => projectSetup());
     }
     
     /**

@@ -22,8 +22,10 @@
     "ts-node": "^7.0.1"
   },
   "dependencies": {
+    "@types/fs-extra": "^5.0.5",
     "axios": "^0.18.0",
     "etch": "^0.14.0",
+    "fs-extra": "^7.0.1",
     "nodegit": "^0.24.1",
     "showdown": "^1.9.0",
     "typescript": "^3.1.6"

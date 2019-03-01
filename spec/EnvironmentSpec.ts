@@ -1,6 +1,6 @@
 import "jasmine";
 import { Copilot } from '../lib/models/Copilot';
-import fs = require('fs');
+import fs = require('fs-extra');
 
 describe("Project Setup", () => {
     let root = 'spec/tmp/';
@@ -8,56 +8,29 @@ describe("Project Setup", () => {
     let curriculumRoot = 'cur/';
     
     beforeAll((done) => {
-        // This function is from 
-        // https://stackoverflow.com/questions/12627586/is-node-js-rmdir-recursive-will-it-work-on-non-empty-directories
-        // as a quick n dirty solution
-        let deleteFolderRecursive = function(path: string) {
-            var files = [];
-            if( fs.existsSync(path) ) {
-                files = fs.readdirSync(path);
-                files.forEach(function(file,index){
-                    var curPath = path + "/" + file;
-                    if(fs.lstatSync(curPath).isDirectory()) { // recurse
-                        deleteFolderRecursive(curPath);
-                    } else { // delete file
-                        fs.unlinkSync(curPath);
-                    }
-                });
-                fs.rmdirSync(path);
-            }
-        };
-        
         // Setup the directory
         root = fs.realpathSync('.') + '/' + root;
         prjRoot = root + prjRoot;
         curriculumRoot = root + curriculumRoot;
         
-        function mkdirPromise(path: string): Promise<void> {
-            return new Promise<void>((resolve, reject) => {
-                fs.mkdir(path, (err) => {
-                    if(err) reject(err);
-                    else resolve();
-                })
-            });
-        }
+        const mkdirRoot = fs.mkdirp(root);
+        const mkdirPrjRoot = fs.mkdirp(prjRoot);
+        const mkdirCurRoot = fs.mkdirp(curriculumRoot);
         
-        if(fs.existsSync(root)) {
-            deleteFolderRecursive(root);
-        }
-        
-        const mkdirRoot = mkdirPromise(root);
-        const mkdirPrjRoot = mkdirPromise(prjRoot);
-        const mkdirCurRoot = mkdirPromise(curriculumRoot);
-        
-        Promise.all([mkdirRoot, mkdirPrjRoot, mkdirCurRoot])
-            .then(() => Copilot.initialize())
-            .then(() => {
-                let model = Copilot.getInstance();
-                model.getEnvironmentManager().setProjectRoot(prjRoot);
-                model.getEnvironmentManager().setCurriculumRoot(curriculumRoot);
-                return model.getEnvironmentManager()
-                    .setupProject("https://github.com/koreanwglasses/test-curriculum.git")
-            }).then(() => done());
+        fs.pathExists(root).then((value) => {
+            if(value) return fs.remove(root);
+        }).then(() => { 
+            return Promise.all([mkdirRoot, mkdirPrjRoot, mkdirCurRoot]).then(() => {})
+        }).then(() => Copilot.initialize())
+        .then(() => {
+            let model = Copilot.getInstance();
+            model.getEnvironmentManager().setProjectRoot(prjRoot);
+            model.getEnvironmentManager().setCurriculumRoot(curriculumRoot);
+
+            return model.getEnvironmentManager()
+                .setupProject("https://github.com/koreanwglasses/test-curriculum.git")
+        }).then(() => done())
+        .catch((reason) => console.error(reason));
     });
     
     it("Should parse stages.json", () => {
@@ -77,6 +50,6 @@ describe("Project Setup", () => {
         
         expect(stages[0].instructions).toBe('step1.md');
         
-        expect(stages[0].location).toBe("stage1/");
+        expect(stages[0].location).toBe("stage1f/");
     });
 });
