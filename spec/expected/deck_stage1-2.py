@@ -15,6 +15,11 @@ print("Unshuffled deck: ", deck)
 shuffle()
 print("Shuffled deck: ", deck)
 
+def deal():
+    ### STEP 2
+    # your code goes here
+    
+# Provided Code for Stage 2
 players = list()
 for i in range(5):
     players.append(list())
@@ -26,4 +31,3 @@ for i in range(5):
     print("Hand %d:" % (i), players[i])
 
 ### SPLICE stage_3_starter
-
