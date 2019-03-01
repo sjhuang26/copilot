@@ -28,14 +28,10 @@ export class Copilot {
     }
     
     public init(): Promise<void> {
-        const initRest = new Promise<void>((resolve, reject) => {
-            const initTestManagerPromise = this.testManager.init();
-            const initWarpDrivePromise = this.warpDrive.init();
-            
-            Promise.all([initTestManagerPromise, initWarpDrivePromise])
-            .then(() => resolve())
-            .catch((reason) => reject(reason));
-        }); 
+        const initTestManagerPromise = this.testManager.init();
+        const initWarpDrivePromise = this.warpDrive.init();
+        
+        const initRest = Promise.all([initTestManagerPromise, initWarpDrivePromise]).then( () => {} );
         
         return this.envMan.init().then(() => initRest);
     }
