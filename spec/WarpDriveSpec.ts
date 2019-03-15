@@ -47,7 +47,6 @@ describe("Fast Forward: test-curriculum", () => {
             });
         }).catch((reason) => {
             console.error(reason);
-            expect(reason).toBeFalsy();
             done();
         });
     });
