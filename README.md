@@ -13,6 +13,7 @@
     - [x] Integrate with Atom Editor
     - [x] Create Basic/Templace views
     - [ ] Create view for instructions
+    - [ ] Create interface for warp drive
     
     ...
 - Model
@@ -28,7 +29,7 @@
         ...
     - Warp Drive
         - [x] Parse stages.json
-        - [ ] Merge changes from another stage into current stage
+        - [x] Merge changes from another stage into current stage
         
         ...
 
