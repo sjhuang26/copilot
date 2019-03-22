@@ -4,8 +4,8 @@ import fs = require('fs-extra');
 
 describe("Project Setup", () => {
     let root = 'spec/tmp/';
-    let prjRoot = 'prj/';
-    let curriculumRoot = 'cur/';
+    let prjRoot = 'prj1/';
+    let curriculumRoot = 'cur1/';
     
     beforeAll((done) => {
         // Setup the directory
@@ -17,8 +17,12 @@ describe("Project Setup", () => {
         const mkdirPrjRoot = fs.mkdirp(prjRoot);
         const mkdirCurRoot = fs.mkdirp(curriculumRoot);
         
-        fs.pathExists(root).then((value) => {
-            if(value) return fs.remove(root);
+        fs.pathExists(prjRoot).then((value) => {
+            if(value) return fs.remove(prjRoot);
+        }).then(() => {
+            return fs.pathExists(curriculumRoot)
+        }).then((value) => {
+            if(value) return fs.remove(curriculumRoot);
         }).then(() => { 
             return Promise.all([mkdirRoot, mkdirPrjRoot, mkdirCurRoot]).then(() => {})
         }).then(() => Copilot.initialize())
@@ -37,7 +41,7 @@ describe("Project Setup", () => {
         const model = Copilot.getInstance();
         const stages = model.getEnvironmentManager().getStages();
         
-        expect(stages.length).toBe(2);
+        expect(stages.length).toBe(3);
         
         expect(stages[0].id).toBe(1);
         expect(stages[0].parent).toBe(0);
