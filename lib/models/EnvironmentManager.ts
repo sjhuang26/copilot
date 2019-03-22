@@ -144,4 +144,10 @@ export class EnvironmentManager {
     public getStages(): Array<Stage> {
         return this.stages;
     }
+
+    public getStageById(stageID: number): Stage {
+        for(let stage of this.stages) {
+            if(stage.id == stageID) return stage;
+        }
+    }
 }
