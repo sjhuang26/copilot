@@ -30,17 +30,15 @@ export class WarpDrive {
 
    /**
     * Fast-forwards to the specified branch, if it is legal* (will be defined better later)
-    * @param branchName The name of the branch to fast-forward to
+    * @param stageID The id of the branch to fast-forward to
     * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
     */
-    public warpTo( branchName: string ): Promise<void> {
+    public warpTo( stageID: number ): Promise<void> {
         const prjRoot = this.parent.getEnvironmentManager().getProjectRoot();
         const curRoot = this.parent.getEnvironmentManager().getCurriculumRoot();
         
-        const stages = this.parent.getEnvironmentManager().getStages();
-        
         // Add code to find stage id later
-        const stageRoot = curRoot + '/' + stages[1].location;
+        const stageRoot = curRoot + '/' + this.parent.getEnvironmentManager().getStageById(stageID).location;
 
         function splice(source: string, dest: string): string {
             // Extract splice regions in source
@@ -88,7 +86,7 @@ export class WarpDrive {
             return destLines.join('\n');
         }
 
-        function spliceFile(file: string): Promise<void> {
+        function mergeFile(file: string): Promise<void> {
             const readSource = fs.readFile(stageRoot + '/' + file, 'utf-8'); 
             const readDest = fs.readFile(prjRoot + '/' + file, 'utf-8'); 
 
@@ -99,22 +97,31 @@ export class WarpDrive {
                 });
         }
 
-        function spliceAllFilesRecursive(relDirectory: string): Promise<void> {
-            const fullDirectory = prjRoot + relDirectory;
+        function mergeAllFilesRecursive(relDirectory: string): Promise<void> {
+            const fullDirectory = stageRoot + relDirectory;
             return fs.readdir(fullDirectory)
                 .then((paths) => {
                     const relPaths = paths.map((path) => relDirectory + path);
                     const promises: Promise<void>[] = [];
 
                     for(let relPath of relPaths) {
-                        const fullPath = prjRoot + relPath;
-                        const promise = fs.lstat(fullPath).then((stats) => {
+                        const fullPath = stageRoot + '/' + relPath;
+
+                        const destExists = fs.pathExists(prjRoot + '/' + relPath);
+
+                        const merge = fs.lstat(fullPath).then((stats) => {
                             if(stats.isFile()) {
-                                return spliceFile(relPath);
+                                return mergeFile(relPath);
                             } else if (stats.isDirectory()) {
-                                return spliceAllFilesRecursive(relPath);
+                                return mergeAllFilesRecursive(relPath);
                             }
                         });
+
+                        const promise = destExists.then((exists) => {
+                            if(exists) return merge;
+                            else return fs.copy(stageRoot + '/' + relPath, prjRoot + '/' + relPath);
+                        });
+
                         promises.push(promise);
                     }
 
@@ -122,6 +129,6 @@ export class WarpDrive {
                 });
         }
 
-        return spliceAllFilesRecursive(''); 
+        return mergeAllFilesRecursive(''); 
     }
 }
