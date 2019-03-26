@@ -1,6 +1,6 @@
 import "jasmine";
 import { Copilot } from '../lib/models/Copilot';
-import fs = require('fs-extra');
+import * as fs from 'fs-extra';
 
 describe("Project Setup", () => {
     let root = 'spec/tmp/';

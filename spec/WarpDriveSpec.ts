@@ -1,7 +1,7 @@
 
 import "jasmine";
 import { Copilot } from '../lib/models/Copilot';
-import fs = require('fs-extra');
+import * as fs from 'fs-extra';
 import { doesNotReject } from "assert";
 
 describe("Fast Forward: test-curriculum", () => {
