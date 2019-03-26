@@ -1,7 +1,7 @@
 import { MethodNotImplementedError } from "./Errors";
 import { Copilot } from "./Copilot";
 import * as fs from "fs-extra";
-import * as Git from "nodegit"
+import * as simplegit from 'simple-git/promise';
 
 export interface CurriculumInfo {
     
@@ -121,7 +121,8 @@ export class EnvironmentManager {
         const projectRoot = projectTarget || this.getProjectRoot();
         
         const self = this;
-        const clonePromise = Git.Clone.clone(location, curriculumRoot);
+        const git = simplegit();
+        const clonePromise = git.clone(location, curriculumRoot);
         
         const projectSetup = () => { 
             const stages = self.getStages();
