@@ -15,7 +15,6 @@
     "@types/axios": "^0.14.0",
     "@types/electron": "^1.6.10",
     "@types/jasmine": "^2.8.11",
-    "@types/nodegit": "^0.24.3",
     "@types/showdown": "^1.9.2",
     "jasmine": "^3.3.0",
     "ts-loader": "^5.3.0",
@@ -26,7 +25,7 @@
     "axios": "^0.18.0",
     "etch": "^0.14.0",
     "fs-extra": "^7.0.1",
-    "nodegit": "^0.24.1",
+    "simple-git": "^1.110.0",
     "showdown": "^1.9.0",
     "typescript": "^3.1.6"
   }
