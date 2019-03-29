@@ -35,7 +35,7 @@ export class WarpDrive {
     */
     public warpTo( stageID: number ): Promise<void> {
         const prjRoot = this.parent.getEnvironmentManager().getProjectRoot();
-        const curRoot = this.parent.getEnvironmentManager().getCurriculumRoot();
+        const curRoot = this.parent.getEnvironmentManager().getProjectMetaRoot();
         
         // Add code to find stage id later
         const stageRoot = curRoot + '/' + this.parent.getEnvironmentManager().getStageById(stageID).location;

@@ -29,7 +29,7 @@ describe("Project Setup", () => {
         .then(() => {
             let model = Copilot.getInstance();
             model.getEnvironmentManager().setProjectRoot(prjRoot);
-            model.getEnvironmentManager().setCurriculumRoot(curriculumRoot);
+            model.getEnvironmentManager().setProjectMetaRoot(curriculumRoot);
 
             return model.getEnvironmentManager()
                 .setupProject("https://github.com/koreanwglasses/test-curriculum.git")
