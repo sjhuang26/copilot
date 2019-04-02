@@ -25,7 +25,11 @@ describe("Project Setup", () => {
             if(value) return fs.remove(curriculumRoot);
         }).then(() => { 
             return Promise.all([mkdirRoot, mkdirPrjRoot, mkdirCurRoot]).then(() => {})
-        }).then(() => Copilot.initialize())
+        }).then(() => Copilot.initialize({
+            envState: {
+                curriculumRoot: curriculumRoot
+            }
+        }))
         .then(() => {
             let model = Copilot.getInstance();
             model.getEnvironmentManager().setProjectRoot(prjRoot);
