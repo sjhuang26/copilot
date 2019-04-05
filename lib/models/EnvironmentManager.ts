@@ -2,9 +2,10 @@ import { MethodNotImplementedError } from "./Errors";
 import { Copilot } from "./Copilot";
 import * as fs from "fs-extra";
 import * as simplegit from 'simple-git/promise';
+import { strictEqual } from "assert";
 
-export interface CurriculumInfo {
-    
+export interface ProjectMeta {
+    stages: Array<Stage>;
 }
 
 export interface Stage {
@@ -42,6 +43,8 @@ export interface Stage {
 export interface EnvironmentState {
     // Whatever information you want to save between sessions, though most of the information you need should be in the filesystem.
     curriculumRoot?: string;
+    projectMetaRoot?: string;
+    projectRoot?: string;
 }
 
 export class EnvironmentManager {
@@ -50,34 +53,50 @@ export class EnvironmentManager {
     private projectMetaRoot: string;
     private projectRoot: string;
     
-    private stages: Array<Stage>;
+    private projectMeta: ProjectMeta;
     
     constructor(parent: Copilot, state?: EnvironmentState) {
         this.parent = parent;
         
         if(state.curriculumRoot) this.curriculumRoot = state.curriculumRoot;
+        if(state.projectMetaRoot) this.projectMetaRoot = state.projectMetaRoot;
+        if(state.projectRoot) this.projectRoot = state.projectRoot;
+
+        this.projectMeta = null; 
     }
     
     /**
     * Loads up the environment from json files 
-    * Things it should do:
-    * - Load and parse the curriculum.json into an object, which should be accessible with getCurriculumInfo
-    * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
+    * Currently only loads the location of the project meta files from the osc_project.json file
+    * @returns A promise the resolves with the instance of the model in use, and rejects with an Error
     */
     public init(): Promise<void> {
         const self = this;
-        const root = self.parent.getEnvironmentManager().getProjectMetaRoot();
-        const path = root + '/stages.json'
+
+        this.projectMeta = {stages: null};
+
+        const readProjectState = (state: EnvironmentState) => {
+            if(state && state.projectMetaRoot) {
+                this.projectMetaRoot = state.projectMetaRoot;
+            }
+        }
+
+        const parseStages = () => {
+            const path = this.projectMetaRoot + '/stages.json'
         
-        const parseStagesPromise = fs.pathExists(path)
+            return fs.pathExists(path)
             .then((value) => {
                 if(value) {
                     return fs.readJson(path)
-                        .then((value1) => self.stages = value1 as Array<Stage>);
+                        .then((value1) => self.projectMeta.stages = value1 as Array<Stage>);
                 }
             });
+        }
         
-        return Promise.all([parseStagesPromise]).then(() => {});
+        return this.loadProjectState()
+        .then(readProjectState)
+        .then(parseStages)
+        .then(() => {})
     }
     
     public serialize(): EnvironmentState {
@@ -113,6 +132,29 @@ export class EnvironmentManager {
         return this.projectRoot;
     }
     
+    /**
+     * Saves project info, such as what the project is called, what the upstream is, where the project
+     * meta is located, etc. Currently just saves to osc_project.json, though this may be changed.
+     */
+    private saveProjectState(): Promise<void> {
+        let state: EnvironmentState = {};
+        state.projectMetaRoot = this.projectMetaRoot;
+        return fs.writeJson(this.projectRoot + '/osc_project.json', state);
+    }
+    
+    /**
+     * Loads project info from osc_project.json
+     */
+    private loadProjectState(): Promise<EnvironmentState> {
+        let file = this.projectRoot + '/osc_project.json';
+        return fs.pathExists(file).then((exists) => {
+            if(exists)
+                return fs.readJson(file)
+            else 
+                return Promise.resolve(null);
+        });
+    }
+
     /**
     * Downloads a curriculum, sets up the file structure for the project, and sets up the environment as well.
     * @param remote The url of the repo that contains the project/project meta to load
@@ -150,23 +192,24 @@ export class EnvironmentManager {
         
         return clearDir
             .then(() => clonePromise)
+            .then(() => this.saveProjectState())
             .then(() => self.parent.init())
-            .then(() => projectSetup());
+            .then(() => projectSetup())
     }
     
     /**
     * Returns curriculum variables
     */
-    public getCurriculumInfo(): CurriculumInfo {
-        throw new MethodNotImplementedError("EnvironmentManager::getCurriculumInfo");
+    public getProjectMeta(): ProjectMeta {
+        return this.projectMeta;
     }
     
     public getStages(): Array<Stage> {
-        return this.stages;
+        return this.projectMeta.stages;
     }
 
     public getStageById(stageID: number): Stage {
-        for(let stage of this.stages) {
+        for(let stage of this.projectMeta.stages) {
             if(stage.id == stageID) return stage;
         }
     }
