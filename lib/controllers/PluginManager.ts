@@ -27,12 +27,11 @@ export class PluginManager {
         // Set initial folder
         let curriculumRoot = atom.packages.getPackageDirPaths()[0] + '/copilot/tmp';
         state.copilotState.envState.curriculumRoot = curriculumRoot; 
+        state.copilotState.envState.projectRoot = atom.project.getDirectories()[0].getPath();
 
         // Initialize model
-        Copilot.initialize(state.copilotState).then( () => {
-            Copilot.getInstance().getEnvironmentManager().setProjectRoot(atom.project.getDirectories()[0].getPath());
-        });
-
+        Copilot.initialize(state.copilotState);
+        
         // Create sidebar
         this.copilotView = new CopilotView(state.copilotViewProps || {});
         atom.workspace.open( this.copilotView );
