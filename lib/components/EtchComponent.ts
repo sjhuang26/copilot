@@ -1,7 +1,7 @@
 import * as etch from 'etch';
 
 export abstract class EtchComponent implements JSX.ElementClass {
-    public refs: any;
+    protected refs: any;
 
     public constructor(public props: JSX.Props) {
         this.refs = {};

@@ -10,10 +10,12 @@ import { EtchComponent } from './EtchComponent';
 export class WarpDriveView extends EtchComponent {
     private parent: CopilotView;
     
+    protected refs: {selectElm: HTMLSelectElement};
+
     public constructor(props: any) {
         super(props);
         
-        this.loadProject = this.loadProject.bind(this);
+        this.warpTo = this.warpTo.bind(this);
         
         etch.initialize(this);
     }
@@ -30,25 +32,25 @@ export class WarpDriveView extends EtchComponent {
             return (
                 <div>
                     <h2>Warp to a stage!</h2>
-                    <select>
-                        {stages.map((stage)=>{ <options value={stage.id}>Stage #{stage.id}</options> })}
+                    <select ref="selectElm">
+                        { stages.map( stage => <option value={stage.id}>Stage #{stage.id}</option> ) } 
                     </select>
+                    <input type="button" class="btn" on={{click: this.warpTo}} value="Go!" />
                 </div>
             );
         }
     }
     
-    loadProject(): void {
-        const source = this.refs.inputbox.value;
+    warpTo(): void {
+        const stageId = parseInt(this.refs.selectElm.value);
         const model = Copilot.getInstance();
-        
-        const promise = model.getEnvironmentManager().setupProject(source);
+
+        const promise = model.getWarpDrive().warpTo(stageId);
         promise.then(() => {
-            atom.notifications.addSuccess("Project successfully set up!");
+            atom.notifications.addSuccess("Successfully warped to stage " + stageId + ".");
         });
         promise.catch((reason) => {
-            atom.notifications.addError("Uh oh! Something went wrong while trying to set up the project.");
-            atom.notifications.addError(reason.message);
-        })
+            atom.notifications.addError("Uh oh! Something went wrong while try to change stages.\n" + reason.message);
+        });
     }
 }
