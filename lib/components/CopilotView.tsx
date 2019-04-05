@@ -5,6 +5,7 @@ import { EtchComponent } from './EtchComponent';
 import { Footer } from './Footer';
 import { ReadoutPreview, ReadoutPreviewProps } from './ReadoutPreview';
 import { BrowseProjects, BrowseProjectsProps } from './BrowseProjects';
+import { WarpDriveView } from './WarpDriveView';
 
 export interface CopilotViewProps extends JSX.Props {
     currentView?: string;
@@ -61,6 +62,9 @@ export class CopilotView extends EtchComponent {
                 </div>
                 <div class={"section " + (this.currentView == "browseprojects" ? "" : "hidden")}>
                     <BrowseProjects {...this.props.browseProjectsProps} ref="browseProjects"/>
+                </div>
+                <div class={"section " + (this.currentView == "warpdriveview" ? "" : "hidden")}>
+                    <WarpDriveView ref="warpDriveView"/>
                 </div>
                 <Footer />
             </div>
