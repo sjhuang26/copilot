@@ -87,16 +87,13 @@ export class EnvironmentManager {
             }
         }
 
-        const parseStages = () => {
+        const parseStages = async() => {
             const path = this.projectMetaRoot + '/stages.json'
         
-            return fs.pathExists(path)
-            .then((value) => {
-                if(value) {
-                    return fs.readJson(path)
-                        .then((value1) => this.projectMeta.stages = value1 as Array<Stage>);
-                }
-            });
+            if(await fs.pathExists(path)) {
+                return fs.readJson(path)
+                    .then((value1) => this.projectMeta.stages = value1 as Array<Stage>);
+            }
         }
         
         return this.loadProjectState()
@@ -148,14 +145,12 @@ export class EnvironmentManager {
     /**
      * Loads project info from osc_project.json
      */
-    private loadProjectState(): Promise<EnvironmentState> {
+    private async loadProjectState(): Promise<EnvironmentState> {
         let file = this.projectRoot + '/copilot.json';
-        return fs.pathExists(file).then((exists) => {
-            if(exists)
-                return fs.readJson(file)
-            else 
-                return Promise.resolve(null);
-        });
+        if(await fs.pathExists(file))
+            return fs.readJson(file)
+        else 
+            return null;
     }
 
     /**
@@ -163,10 +158,15 @@ export class EnvironmentManager {
     * @param remote The url of the repo that contains the project/project meta to load
     * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
     */
-    public setupProject(remote: string): Promise<void> {
+    public async setupProject(remote: string): Promise<void> {
         if(!this.getProjectRoot()) {
             throw new Error("Project root is not set!");
         }
+
+        if((await fs.readdir(this.getProjectRoot())).length > 0) {
+            throw new Error("Project directory is not empty!");
+        }
+
         if(!this.getProjectMetaRoot()) {
             const repoName = remote.match(/([^\/]*\/)?[^\/]*$/)[0]; // Extracts last portion of repo
             this.setProjectMetaRoot(this.curriculumRoot + '/' + repoName);
