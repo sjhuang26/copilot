@@ -86,8 +86,7 @@ export class BrowseProjects extends EtchComponent {
             atom.notifications.addSuccess("Project successfully set up!");
         });
         promise.catch((reason) => {
-            atom.notifications.addError("Uh oh! Something went wrong while trying to set up the project.");
-            atom.notifications.addError(reason.message);
+            atom.notifications.addError("Uh oh! Something went wrong while trying to set up the project.\n" + reason.message);
         })
     }
 }
