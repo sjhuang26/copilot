@@ -69,15 +69,15 @@ export class EnvironmentManager {
         const root = self.parent.getEnvironmentManager().getProjectMetaRoot();
         const path = root + '/stages.json'
         
-        const parseStagesPromise = fs.pathExists(path)
+        return fs.pathExists(path)
             .then((value) => {
                 if(value) {
                     return fs.readJson(path)
-                        .then((value1) => self.stages = value1 as Array<Stage>);
+                        .then((value1) => {
+                            self.stages = value1 as Array<Stage>;
+                        });
                 }
             });
-        
-        return Promise.all([parseStagesPromise]).then(() => {});
     }
     
     public serialize(): EnvironmentState {
