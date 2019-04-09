@@ -33,14 +33,6 @@ export class Copilot {
             .then(() =>{});
     }
     
-    public serialize(): CopilotState {
-        return {
-            envState: this.envMan.serialize(),
-            testState: this.envMan.serialize(),
-            warpDriveState: this.envMan.serialize()
-        };
-    }
-    
     public getEnvironmentManager(): EnvironmentManager {
         return this.envMan;
     }

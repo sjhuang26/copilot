@@ -24,10 +24,6 @@ export class WarpDrive {
         return new Promise<void>( (resolve, reject) => resolve() );
     }
    
-    public serialize(): WarpDriveState {
-        return {};
-    }
-
    /**
     * Fast-forwards to the specified branch, if it is legal* (will be defined better later)
     * @param stageID The id of the branch to fast-forward to

@@ -80,10 +80,6 @@ export class EnvironmentManager {
         return Promise.all([parseStagesPromise]).then(() => {});
     }
     
-    public serialize(): EnvironmentState {
-        return {};
-    }
-    
     /**
     * Sets the folder that contains info for the various curriculums
     */
