@@ -99,10 +99,6 @@ export class EnvironmentManager {
         .then(() => {})
     }
     
-    public serialize(): EnvironmentState {
-        return {};
-    }
-    
     /**
     * Sets the folder that contains info for the various curriculums
     */

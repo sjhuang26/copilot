@@ -28,20 +28,9 @@ export class Copilot {
     }
     
     public init(): Promise<void> {
-        const initTestManagerPromise = this.testManager.init();
-        const initWarpDrivePromise = this.warpDrive.init();
-        
-        const initRest = Promise.all([initTestManagerPromise, initWarpDrivePromise]).then( () => {} );
-        
-        return this.envMan.init().then(() => initRest);
-    }
-    
-    public serialize(): CopilotState {
-        return {
-            envState: this.envMan.serialize(),
-            testState: this.envMan.serialize(),
-            warpDriveState: this.envMan.serialize()
-        };
+        return this.envMan.init()
+            .then(() => Promise.all([this.testManager.init(), this.warpDrive.init()]))
+            .then(() =>{});
     }
     
     public getEnvironmentManager(): EnvironmentManager {
