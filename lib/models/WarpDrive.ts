@@ -9,8 +9,9 @@ export interface WarpDriveState {
 
 export class WarpDrive {
     private parent: Copilot;
+    private currentStageId: number;
 
-    constructor(parent: Copilot, state?: WarpDriveState) {
+    constructor(parent: Copilot) {
         this.parent = parent;
     }
 
@@ -20,12 +21,17 @@ export class WarpDrive {
      * Currently reads in the stages.json, though this functionality may be moved
      * to EnvironmentManager
      */
-    public init(): Promise<void> {
-        return new Promise<void>( (resolve, reject) => resolve() );
+    public init(state: WarpDriveState): Promise<void> {
+        if(state && state.currentStageId) {
+            this.currentStageId = this.currentStageId;
+        }
+        return Promise.resolve(); 
     }
    
     public serialize(): WarpDriveState {
-        return {};
+        return {
+            currentStageId: this.currentStageId
+        };
     }
 
    /**
