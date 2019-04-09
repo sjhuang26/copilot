@@ -76,8 +76,6 @@ export class EnvironmentManager {
     * @returns A promise the resolves with the instance of the model in use, and rejects with an Error
     */
     public init(): Promise<void> {
-        const self = this;
-
         this.projectMeta = {stages: null};
 
         const readProjectState = (state: EnvironmentState) => {
@@ -96,7 +94,7 @@ export class EnvironmentManager {
             .then((value) => {
                 if(value) {
                     return fs.readJson(path)
-                        .then((value1) => self.projectMeta.stages = value1 as Array<Stage>);
+                        .then((value1) => this.projectMeta.stages = value1 as Array<Stage>);
                 }
             });
         }
@@ -177,7 +175,6 @@ export class EnvironmentManager {
         const projectMetaRoot = this.getProjectMetaRoot();
         const projectRoot = this.getProjectRoot();
         
-        const self = this;
         const git = simplegit();
 
         const clearDir = () => fs.pathExists(projectMetaRoot)
@@ -191,16 +188,16 @@ export class EnvironmentManager {
 
         const projectSetup = () => { 
             const stages = this.getStages();
-            this.currentStageId = 0;
+            this.currentStageId = stages[0].id;
             const stageLocation = projectMetaRoot + '/' + stages[0].location;
             return fs.copy(stageLocation, projectRoot, {errorOnExist: true} );
         }
         
         return clearDir()
             .then(clonePromise)
-            .then(() => this.saveProjectState())
-            .then(() => this.parent.init())
+            .then(() => this.init())
             .then(projectSetup)
+            .then(() => this.saveProjectState())
     }
     
     /**

@@ -52,7 +52,6 @@ export class PluginManager {
     
     serialize() {
         return {
-            copilotState: Copilot.getInstance().serialize(),
             copilotViewProps: this.copilotView.serialize()
         };
     }

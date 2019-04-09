@@ -28,11 +28,11 @@ export class WarpDrive {
     */
     public warpTo( stageID: number ): Promise<void> {
         const envMan = this.parent.getEnvironmentManager();
-        const prjRoot = envMan; 
-        const curRoot = envMan; 
+        const prjRoot = envMan.getProjectRoot(); 
+        const metaRoot = envMan.getProjectMetaRoot(); 
         
         // Add code to find stage id later
-        const stageRoot = curRoot + '/' + this.parent.getEnvironmentManager().getStageById(stageID).location;
+        const stageRoot = metaRoot + '/' + this.parent.getEnvironmentManager().getStageById(stageID).location;
 
         function splice(source: string, dest: string): string {
             // Extract splice regions in source
