@@ -57,13 +57,12 @@ export class ReadoutPreview extends EtchComponent {
     loadReadout() {
         this.update({markdown: "Loading..."});
 
-        const self = this;
         const file = new File(this.props.currentFile);
         file.read().then((value) => {
-            self.update({markdown: value})
+            this.update({markdown: value})
         }).catch((reason) => {
             atom.notifications.addError(reason);
-            self.update({markdown: "Error loading markdown"});
+            this.update({markdown: "Error loading markdown"});
         });
     }
 
