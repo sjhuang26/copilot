@@ -61,7 +61,7 @@ export class BrowseProjects extends EtchComponent {
                 <h3>{project.title}</h3>
                 <p>{project.description}</p>
                 <p>{project.topic}</p>
-                <input type="button" class="btn" on={{click: () => this.startProject(project.url)}} value="Start Project" />
+                <input type="button" class="btn" on={{click: () => this.startProject(project.url) + '.git'}} value="Start Project" />
             </div>
         );
         return (
