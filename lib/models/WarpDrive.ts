@@ -4,7 +4,7 @@ import * as fs from 'fs-extra';
 
 
 export interface WarpDriveState {
-
+    currentStageId?: number
 }
 
 export class WarpDrive {
@@ -109,17 +109,18 @@ export class WarpDrive {
 
                         const destExists = fs.pathExists(prjRoot + '/' + relPath);
 
-                        const merge = fs.lstat(fullPath).then((stats) => {
-                            if(stats.isFile()) {
-                                return mergeFile(relPath);
-                            } else if (stats.isDirectory()) {
-                                return mergeAllFilesRecursive(relPath);
-                            }
-                        });
-
                         const promise = destExists.then((exists) => {
-                            if(exists) return merge;
-                            else return fs.copy(stageRoot + '/' + relPath, prjRoot + '/' + relPath);
+                            if (exists) {
+                                return fs.lstat(fullPath).then((stats) => {
+                                    if(stats.isFile()) {
+                                        return mergeFile(relPath);
+                                    } else if (stats.isDirectory()) {
+                                        return mergeAllFilesRecursive(relPath);
+                                    }
+                                });
+                            } else {
+                                return fs.copy(stageRoot + '/' + relPath, prjRoot + '/' + relPath);
+                            }
                         });
 
                         promises.push(promise);

@@ -1,13 +1,13 @@
-import "jasmine";
 import { Copilot } from '../lib/models/Copilot';
 import * as fs from 'fs-extra';
+import { TEST_REPO } from './TestVariables';
 
 describe("Project Setup", () => {
     let root = 'spec/tmp/';
     let prjRoot = 'prj1/';
     let curriculumRoot = 'cur1/';
     
-    beforeAll((done) => {
+    beforeAll(() => {
         // Setup the directory
         root = fs.realpathSync('.') + '/' + root;
         prjRoot = root + prjRoot;
@@ -17,7 +17,7 @@ describe("Project Setup", () => {
         const mkdirPrjRoot = fs.mkdirp(prjRoot);
         const mkdirCurRoot = fs.mkdirp(curriculumRoot);
         
-        fs.pathExists(prjRoot).then((value) => {
+        return fs.pathExists(prjRoot).then((value) => {
             if(value) return fs.remove(prjRoot);
         }).then(() => {
             return fs.pathExists(curriculumRoot)
@@ -35,13 +35,11 @@ describe("Project Setup", () => {
             model.getEnvironmentManager().setProjectRoot(prjRoot);
             model.getEnvironmentManager().setProjectMetaRoot(curriculumRoot);
 
-            return model.getEnvironmentManager()
-                .setupProject("https://github.com/koreanwglasses/test-curriculum.git")
-        }).then(() => done())
-        .catch((reason) => console.error(reason));
+            return model.getEnvironmentManager().setupProject(TEST_REPO)
+        });
     });
     
-    it("Should parse stages.json", () => {
+    test("Should parse stages.json", () => {
         const model = Copilot.getInstance();
         const stages = model.getEnvironmentManager().getStages();
         

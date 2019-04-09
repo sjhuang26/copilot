@@ -139,14 +139,14 @@ export class EnvironmentManager {
     private saveProjectState(): Promise<void> {
         let state: EnvironmentState = {};
         state.projectMetaRoot = this.projectMetaRoot;
-        return fs.writeJson(this.projectRoot + '/osc_project.json', state);
+        return fs.writeJson(this.projectRoot + '/copilot.json', state);
     }
     
     /**
      * Loads project info from osc_project.json
      */
     private loadProjectState(): Promise<EnvironmentState> {
-        let file = this.projectRoot + '/osc_project.json';
+        let file = this.projectRoot + '/copilot.json';
         return fs.pathExists(file).then((exists) => {
             if(exists)
                 return fs.readJson(file)

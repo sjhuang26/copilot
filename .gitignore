@@ -5,3 +5,5 @@ dist/
 spec/tmp/
 tmp/
 .vscode/
+*.sh
+*.bat
