@@ -9,39 +9,27 @@ export interface WarpDriveState {
 
 export class WarpDrive {
     private parent: Copilot;
-    private currentStageId: number;
 
     constructor(parent: Copilot) {
         this.parent = parent;
     }
 
     /**
-     * Initializes whatever is needed to fast forward.
-     * 
-     * Currently reads in the stages.json, though this functionality may be moved
-     * to EnvironmentManager
+     * Initializes whatever is needed to fast forward. Currently does nothing
      */
-    public init(state: WarpDriveState): Promise<void> {
-        if(state && state.currentStageId) {
-            this.currentStageId = this.currentStageId;
-        }
+    public init(): Promise<void> {
         return Promise.resolve(); 
     }
    
-    public serialize(): WarpDriveState {
-        return {
-            currentStageId: this.currentStageId
-        };
-    }
-
    /**
     * Fast-forwards to the specified branch, if it is legal* (will be defined better later)
     * @param stageID The id of the branch to fast-forward to
     * @returns A promise the resolves with the instance of the model in use, and rejects with an Error (or subtype of Error).
     */
     public warpTo( stageID: number ): Promise<void> {
-        const prjRoot = this.parent.getEnvironmentManager().getProjectRoot();
-        const curRoot = this.parent.getEnvironmentManager().getProjectMetaRoot();
+        const envMan = this.parent.getEnvironmentManager();
+        const prjRoot = envMan; 
+        const curRoot = envMan; 
         
         // Add code to find stage id later
         const stageRoot = curRoot + '/' + this.parent.getEnvironmentManager().getStageById(stageID).location;
@@ -136,6 +124,8 @@ export class WarpDrive {
                 });
         }
 
-        return mergeAllFilesRecursive(''); 
+        return mergeAllFilesRecursive('')
+            .then(() => envMan.setCurrentStageId(stageID))
+            .then(() => envMan.saveProjectState()); 
     }
 }

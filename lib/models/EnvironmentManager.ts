@@ -45,6 +45,8 @@ export interface EnvironmentState {
     curriculumRoot?: string;
     projectMetaRoot?: string;
     projectRoot?: string;
+
+    currentStageId?: number;
 }
 
 export class EnvironmentManager {
@@ -52,6 +54,8 @@ export class EnvironmentManager {
     private curriculumRoot: string;
     private projectMetaRoot: string;
     private projectRoot: string;
+
+    private currentStageId: number;
     
     private projectMeta: ProjectMeta;
     
@@ -61,6 +65,7 @@ export class EnvironmentManager {
         if(state.curriculumRoot) this.curriculumRoot = state.curriculumRoot;
         if(state.projectMetaRoot) this.projectMetaRoot = state.projectMetaRoot;
         if(state.projectRoot) this.projectRoot = state.projectRoot;
+        if(state.currentStageId) this.currentStageId = state.currentStageId;
 
         this.projectMeta = null; 
     }
@@ -78,6 +83,9 @@ export class EnvironmentManager {
         const readProjectState = (state: EnvironmentState) => {
             if(state && state.projectMetaRoot) {
                 this.projectMetaRoot = state.projectMetaRoot;
+            }
+            if(state && state.currentStageId) {
+                this.currentStageId = state.currentStageId;
             }
         }
 
@@ -132,9 +140,10 @@ export class EnvironmentManager {
      * Saves project info, such as what the project is called, what the upstream is, where the project
      * meta is located, etc. Currently just saves to osc_project.json, though this may be changed.
      */
-    private saveProjectState(): Promise<void> {
+    public saveProjectState(): Promise<void> {
         let state: EnvironmentState = {};
         state.projectMetaRoot = this.projectMetaRoot;
+        state.currentStageId = this.currentStageId;
         return fs.writeJson(this.projectRoot + '/copilot.json', state);
     }
     
@@ -171,26 +180,27 @@ export class EnvironmentManager {
         const self = this;
         const git = simplegit();
 
-        const clearDir = fs.pathExists(projectMetaRoot)
+        const clearDir = () => fs.pathExists(projectMetaRoot)
             .then((value) => {
                 if(value) {
                     return fs.remove(projectMetaRoot);
                 }
             });
 
-        const clonePromise = git.clone(remote, projectMetaRoot);
+        const clonePromise = () => git.clone(remote, projectMetaRoot);
 
         const projectSetup = () => { 
-            const stages = self.getStages();
+            const stages = this.getStages();
+            this.currentStageId = 0;
             const stageLocation = projectMetaRoot + '/' + stages[0].location;
             return fs.copy(stageLocation, projectRoot, {errorOnExist: true} );
         }
         
-        return clearDir
-            .then(() => clonePromise)
+        return clearDir()
+            .then(clonePromise)
             .then(() => this.saveProjectState())
-            .then(() => self.parent.init())
-            .then(() => projectSetup())
+            .then(() => this.parent.init())
+            .then(projectSetup)
     }
     
     /**
@@ -209,4 +219,13 @@ export class EnvironmentManager {
             if(stage.id == stageID) return stage;
         }
     }
+
+    public getCurrentStageId(): number {
+        return this.currentStageId;
+    }
+
+    public setCurrentStageId(stageId: number): void {
+        this.currentStageId = stageId;
+    }
+
 }

@@ -24,7 +24,7 @@ export class Copilot {
         
         this.envMan = new EnvironmentManager(this, state.envState);
         this.testManager = new TestManager(this, state.testState);
-        this.warpDrive = new WarpDrive(this, state.warpDriveState);
+        this.warpDrive = new WarpDrive(this);
     }
     
     public init(): Promise<void> {
