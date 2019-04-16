@@ -13,10 +13,6 @@ describe("Fast Forward: test-curriculum", () => {
         prjRoot = root + prjRoot;
         curriculumRoot = root + curriculumRoot;
         
-        const mkdirRoot = fs.mkdirp(root);
-        const mkdirPrjRoot = fs.mkdirp(prjRoot);
-        const mkdirCurRoot = fs.mkdirp(curriculumRoot);
-        
         return fs.pathExists(prjRoot).then((value) => {
             if(value) return fs.remove(prjRoot);
         }).then(() => {
@@ -24,6 +20,9 @@ describe("Fast Forward: test-curriculum", () => {
         }).then((value) => {
                 if(value) return fs.remove(curriculumRoot);
         }).then(() => { 
+            const mkdirRoot = fs.mkdirp(root);
+            const mkdirPrjRoot = fs.mkdirp(prjRoot);
+            const mkdirCurRoot = fs.mkdirp(curriculumRoot);
             return Promise.all([mkdirRoot, mkdirPrjRoot, mkdirCurRoot]).then(() => {})
         }).then(() => Copilot.initialize({
             envState: {
@@ -46,7 +45,7 @@ describe("Fast Forward: test-curriculum", () => {
             const readActual = fs.readFile('spec/tmp/prj2/deck.py', 'utf-8');
             
             return Promise.all([readExpected, readActual]).then((value) => {
-                expect(value[1]).toBe(value[0]);
+                expect(value[1].trim()).toBe(value[0].trim());
             });
         });
     });
