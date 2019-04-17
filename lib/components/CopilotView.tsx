@@ -6,6 +6,7 @@ import { Footer } from './Footer';
 import { ReadoutPreview, ReadoutPreviewProps } from './ReadoutPreview';
 import { BrowseProjects, BrowseProjectsProps } from './BrowseProjects';
 import { WarpDriveView } from './WarpDriveView';
+import { InstructionsView } from './InstructionsView';
 
 export interface CopilotViewProps extends JSX.Props {
     currentView?: string;
@@ -66,6 +67,9 @@ export class CopilotView extends EtchComponent {
                 <div class={"section " + (this.currentView == "warpdriveview" ? "" : "hidden")}>
                     <WarpDriveView ref="warpDriveView"/>
                 </div>
+                <div class={"section " + (this.currentView == "instructionsview" ? "" : "hidden")}>
+                    <InstructionsView ref="instructionView"/>
+                </div>
                 <Footer />
             </div>
         );
@@ -88,6 +92,9 @@ export class CopilotView extends EtchComponent {
     * * ProjectSetup
     * * StartupPage
     * * ReadoutPreview
+    * * BrowseProjects 
+    * * WarpDriveView
+    * * InstructionsView
     * @param updateNow Controls whether the component should update immediately to
     * reflect the changed view. True by default.
     */
