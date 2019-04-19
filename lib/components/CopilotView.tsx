@@ -6,7 +6,7 @@ import { Footer } from './Footer';
 import { ReadoutPreview, ReadoutPreviewProps } from './ReadoutPreview';
 import { BrowseProjects, BrowseProjectsProps } from './BrowseProjects';
 import { WarpDriveView } from './WarpDriveView';
-import { InstructionsView } from './InstructionsView';
+import { InstructionsView, InstructionsViewProps } from './InstructionsView';
 
 export interface CopilotViewProps extends JSX.Props {
     currentView?: string;
@@ -15,6 +15,7 @@ export interface CopilotViewProps extends JSX.Props {
     startupPageProps?: StartupPageProps;
     readoutPreviewProps?: ReadoutPreviewProps;
     browseProjectsProps?: BrowseProjectsProps;
+    instructionsViewProps?: InstructionsViewProps;
 }
 
 /**
@@ -68,7 +69,7 @@ export class CopilotView extends EtchComponent {
                     <WarpDriveView ref="warpDriveView"/>
                 </div>
                 <div class={"section " + (this.currentView == "instructionsview" ? "" : "hidden")}>
-                    <InstructionsView ref="instructionView"/>
+                    <InstructionsView {...this.props.instructionsViewProps} ref="instructionsView"/>
                 </div>
                 <Footer />
             </div>
@@ -82,7 +83,8 @@ export class CopilotView extends EtchComponent {
             projectSetupProps: this.refs.projectSetup.serialize(),
             startupPageProps: this.refs.startupPage.serialize(),
             readoutPreviewProps: this.refs.readoutPreview.serialize(),
-            browseProjectsProps: this.refs.browseProjects.serialize()
+            browseProjectsProps: this.refs.browseProjects.serialize(),
+            instructionsViewProps: this.refs.instructionsView.serialize()
         }
     }
 
