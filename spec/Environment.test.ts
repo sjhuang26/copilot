@@ -13,10 +13,6 @@ describe("Project Setup", () => {
         prjRoot = root + prjRoot;
         curriculumRoot = root + curriculumRoot;
         
-        const mkdirRoot = fs.mkdirp(root);
-        const mkdirPrjRoot = fs.mkdirp(prjRoot);
-        const mkdirCurRoot = fs.mkdirp(curriculumRoot);
-        
         return fs.pathExists(prjRoot).then((value) => {
             if(value) return fs.remove(prjRoot);
         }).then(() => {
@@ -24,6 +20,10 @@ describe("Project Setup", () => {
         }).then((value) => {
             if(value) return fs.remove(curriculumRoot);
         }).then(() => { 
+            const mkdirRoot = fs.mkdirp(root);
+            const mkdirPrjRoot = fs.mkdirp(prjRoot);
+            const mkdirCurRoot = fs.mkdirp(curriculumRoot);
+
             return Promise.all([mkdirRoot, mkdirPrjRoot, mkdirCurRoot]).then(() => {})
         }).then(() => Copilot.initialize({
             envState: {
