@@ -27,7 +27,7 @@ export class PluginManager {
         // Set initial folder
         let curriculumRoot = atom.packages.getPackageDirPaths()[0] + '/copilot/tmp';
         state.copilotState.envState.curriculumRoot = curriculumRoot; 
-        if(atom.project.getDirectories.length > 0) {
+        if(atom.project.getDirectories().length > 0) {
             state.copilotState.envState.projectRoot = atom.project.getDirectories()[0].getPath();
         }
 
