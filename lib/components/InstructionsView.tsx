@@ -28,7 +28,6 @@ export class InstructionsView extends EtchComponent {
         this.props.markdown = "No Instructions";
 
         etch.initialize(this);
-        this.loadReadout(0);
     }
     
     public render(): JSX.Element {
