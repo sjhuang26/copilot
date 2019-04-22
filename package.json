@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest -i --verbose",
     "watch": "tsc -w",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint lib/components/** lib/controllers/** lib/models/** --ext .js,.ts"
   },
   "author": "Fred Choi",
   "license": "MIT",
@@ -16,6 +17,9 @@
     "@types/electron": "^1.6.10",
     "@types/jest": "^24.0.11",
     "@types/showdown": "^1.9.2",
+    "@typescript-eslint/eslint-plugin": "^1.7.0",
+    "@typescript-eslint/parser": "^1.7.0",
+    "eslint": "^5.16.0",
     "jest": "^24.7.1",
     "ts-jest": "^24.0.2",
     "ts-loader": "^5.3.0",

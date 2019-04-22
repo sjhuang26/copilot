@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as etch from 'etch';
 
 export abstract class EtchComponent implements JSX.ElementClass {
